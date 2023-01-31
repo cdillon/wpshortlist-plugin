@@ -28,7 +28,7 @@ function wpshortlist_get_all_post_meta() {
 /**
  * Use default featured image if Tool has no image.
  */
-function wpshortlist_post_thumbanil_id( $thumbnail_id, $post ) {
+function wpshortlist_post_thumbnail_id( $thumbnail_id, $post ) {
 	if ( 0 === $thumbnail_id && 'tool' == $post->post_type ) {
 		return 233;
 	}
@@ -36,4 +36,4 @@ function wpshortlist_post_thumbanil_id( $thumbnail_id, $post ) {
 	return $thumbnail_id;
 }
 
-add_filter( 'post_thumbnail_id', 'wpshortlist_post_thumbanil_id', 10, 2 );
+add_filter( 'post_thumbnail_id', 'wpshortlist_post_thumbnail_id', 10, 2 );
