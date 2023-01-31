@@ -12,6 +12,7 @@ function wpshortlist_register_post_types() {
 	wpshortlist_register_post_type__feature_proxy();
 	wpshortlist_register_post_type__category_proxy();
 }
+
 add_action( 'init', 'wpshortlist_register_post_types' );
 
 /**

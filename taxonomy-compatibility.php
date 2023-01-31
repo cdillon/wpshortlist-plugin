@@ -62,11 +62,6 @@ function wpshortlist_register_taxonomy__compatibility() {
 		'rest_base' => 'compatibility',
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
 		'rest_namespace' => 'wp/v2',
-		
-		/*
-		 * 3rd party
-		 */
-		'show_in_graphql' => false,
 	];
 
 	register_taxonomy( 'compatibility', [ 'tool' ], $args );

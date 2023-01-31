@@ -65,6 +65,10 @@ function wpshortlist_register_post_type__tool() {
 
 		'hierarchical' => false,
 
+		'has_archive' => true,
+		'rewrite' => [ 'slug' => 'tools', 'with_front' => true ],   // usually plural
+		'query_var' => true,
+		
 		/*
 		 * Don't comment out in case something enables the classic editor.
 		 */
@@ -75,14 +79,8 @@ function wpshortlist_register_post_type__tool() {
 		
 		'menu_position' => null,
 		'menu_icon' => null,   // then 'dashicons-admin-post'
-		
 		'capability_type' => 'post',
 		'map_meta_cap' => true,
-		
-		'has_archive' => true,
-		'rewrite' => [ 'slug' => 'tools', 'with_front' => true ],   // usually plural
-		'query_var' => true,
-		
 		'can_export' => false,
 		'delete_with_user' => false,
 
@@ -109,11 +107,6 @@ function wpshortlist_register_post_type__tool() {
 		'supports' => [ 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes' ],
 		
 		'taxonomies' => [ 'wp_category' ],
-		
-		/*
-		 * 3rd party
-		 */
-		'show_in_graphql' => false,
 	];
 
 	// key must not exceed 20 characters

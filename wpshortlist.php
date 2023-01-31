@@ -10,7 +10,6 @@
 
 require_once plugin_dir_path( __FILE__ ) . 'functions.php';
 require_once plugin_dir_path( __FILE__ ) . 'functions-query.php';
-require_once plugin_dir_path( __FILE__ ) . 'functions-filter-everything.php';
 require_once plugin_dir_path( __FILE__ ) . 'functions-meta-box.php';
 require_once plugin_dir_path( __FILE__ ) . 'post-types.php';
 require_once plugin_dir_path( __FILE__ ) . 'taxonomies.php';
@@ -23,6 +22,7 @@ function wpshortlist_activate() {
 	wpshortlist_register_taxonomies(); 
 	flush_rewrite_rules(); 
 }
+
 register_activation_hook( __FILE__, 'wpshortlist_activate' );
 
 /**
@@ -33,4 +33,5 @@ function wpshortlist_deactivate() {
 	wpshortlist_unregister_taxonomies();
 	flush_rewrite_rules();
 }
+
 register_deactivation_hook( __FILE__, 'wpshortlist_deactivate' );
