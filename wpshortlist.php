@@ -13,6 +13,8 @@ require_once plugin_dir_path( __FILE__ ) . 'functions-query.php';
 require_once plugin_dir_path( __FILE__ ) . 'functions-meta-box.php';
 require_once plugin_dir_path( __FILE__ ) . 'post-types.php';
 require_once plugin_dir_path( __FILE__ ) . 'taxonomies.php';
+require_once plugin_dir_path( __FILE__ ) . 'filters.php';
+require_once plugin_dir_path( __FILE__ ) . 'widgets.php';
 
 /**
  * On plugin activation.

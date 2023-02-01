@@ -1,19 +1,51 @@
 <?php
+
 /**
  * Add meta boxes for feature-specific post meta.
  */
 function wpshortlist_meta_boxes ( $meta_boxes ) {
+
+	if ( ! function_exists( 'wpshortlist_get_config' ) ) {
+		return $meta_boxes;
+	}
+
+	$config = wpshortlist_get_config();
+
+	foreach ( $config as $filter_set ) {
+		$meta_box = [];
+		$fields   = [];
+
+		$meta_box['id']         = $filter_set['term'];
+		$meta_box['title']      = 'Feature: ' . $filter_set['name'];
+		$meta_box['post_types'] = $filter_set['post_types'];
+
+		foreach ( $filter_set['filters'] as $filter ) {
+			$fields[] = [
+				'name'    => $filter['name'],
+				'id'      => $filter['query_var'],
+				'type'    => $filter['meta_box_type'],
+				'options' => $filter['options'],
+			];
+		}
+		
+		$meta_box['fields'] = $fields;
+		
+		$meta_boxes[] = $meta_box;
+	}
+
+	/* --- SAVE AS REFERENCE --- */
+	/*
 	// Display Term List
 	$meta_boxes[] = [
-		'id'         => 'display-term-list',
-		'title'      => 'Feature: Display Term List',
+		'id'         => 'display-term-list',  // same as $term
+		'title'      => 'Feature: Display Term List',  // similar to filter_set[name], can be assembled
 		'post_types' => 'tool',
 		'fields'     => [
 			[
-				'name' => 'Method',
-				'id'   => 'method-display-term-list',
-				'type' => 'checkbox_list',
-				'options' => [
+				'name' => 'Method',  // same as filter[name]
+				'id'   => 'method-display-term-list',  // same a filter[query_var]
+				'type' => 'checkbox_list',  // unique
+				'options' => [  // same as filter[options]
 					'block'     => 'block',
 					'widget'    => 'widget',
 					'shortcode' => 'shortcode',
@@ -26,7 +58,7 @@ function wpshortlist_meta_boxes ( $meta_boxes ) {
 				'options' => [
 					'categories'        => 'categories',
 					'tags'              => 'tags',
-					'custom taxonomies' => 'custom taxonomies',
+					'custom-taxonomies' => 'custom taxonomies',
 				],
 			],
 		],
@@ -59,11 +91,12 @@ function wpshortlist_meta_boxes ( $meta_boxes ) {
 					// 'custom post types' => 'custom post types',
 					'categories'        => 'categories',
 					'tags'              => 'tags',
-					'custom taxonomies' => 'custom taxonomies',
+					'custom-taxonomies' => 'custom taxonomies',
 				],
 			],
 		],
 	];
+	*/
 
 	return $meta_boxes;
 }
