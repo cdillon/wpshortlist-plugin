@@ -8,8 +8,7 @@ function wpshortlist_get_config() {
 
 	$filter_sets = [];
 	/*
-	Loop:
-
+	// Loop:
 	foreach ( $config as $filter_set ) {
 		foreach ( $filter_set['filters'] as $filter ) {
 			foreach ( $filter['options'] as $option_id => $option_name ) {

@@ -3,7 +3,7 @@
 /**
  * Add meta boxes for feature-specific post meta.
  */
-function wpshortlist_meta_boxes ( $meta_boxes ) {
+function wpshortlist_meta_boxes( $meta_boxes ) {
 
 	if ( ! function_exists( 'wpshortlist_get_config' ) ) {
 		return $meta_boxes;
