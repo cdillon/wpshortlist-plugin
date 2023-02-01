@@ -5,7 +5,7 @@
  * Features have unique Methods and Supports. Define them here.
  */
 function wpshortlist_get_config() {
-	
+
 	$filter_sets = [];
 	/*
 	Loop:
@@ -18,8 +18,9 @@ function wpshortlist_get_config() {
 	}
 	*/
 	
+	$tax_name   = 'wp_feature';
+	$taxonomy   = get_taxonomy( $tax_name );
 	$post_types = [ 'tool' ];
-	$taxonomy   = 'wp_feature';
 
 	/*
 	 * Display Term List
@@ -28,10 +29,11 @@ function wpshortlist_get_config() {
 
 	$filter_sets[] = [
 		// should name be pulled from term?
-		'name'       => __( 'Display Term List', 'wpshortlist' ),
-		'taxonomy'   => $taxonomy,
-		'term'       => $term,
-		'post_types' => $post_types,
+		'name'           => __( 'Display Term List', 'wpshortlist' ),
+		'taxonomy'       => $tax_name,
+		'taxonomy_title' => $taxonomy->labels->singular_name,
+		'term'           => $term,
+		'post_types'     => $post_types,
 		
 		'filters' => [
 			[
@@ -62,17 +64,18 @@ function wpshortlist_get_config() {
 			],
 		]
 	];
-
+		
 	/*
 	 * Display Terms Current Post
 	 */
 	$term = 'display-terms-current-post';
 	
 	$filter_sets[] = [
-		'name'       => __( 'Display Terms Current Post', 'wpshortlist' ),
-		'taxonomy'   => $taxonomy,
-		'term'       => $term,
-		'post_types' => $post_types,
+		'name'           => __( 'Display Terms Current Post', 'wpshortlist' ),
+		'taxonomy'       => $tax_name,
+		'taxonomy_title' => $taxonomy->labels->singular_name,
+		'term'           => $term,
+		'post_types'     => $post_types,
 		
 		'filters' => [
 			[ 
@@ -81,7 +84,7 @@ function wpshortlist_get_config() {
 				'id'            => 'method',
 				'query_var'     => 'method' . '-' . $term,
 				'meta_box_type' => 'checkbox_list',
-
+				
 				'options'       => [
 					'automatic' => 'automatic',
 					'block'     => 'block',

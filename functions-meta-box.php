@@ -16,7 +16,7 @@ function wpshortlist_meta_boxes ( $meta_boxes ) {
 		$fields   = [];
 
 		$meta_box['id']         = $filter_set['term'];
-		$meta_box['title']      = 'Feature: ' . $filter_set['name'];
+		$meta_box['title']      = $filter_set['taxonomy_title'] . ': ' . $filter_set['name'];
 		$meta_box['post_types'] = $filter_set['post_types'];
 
 		foreach ( $filter_set['filters'] as $filter ) {
