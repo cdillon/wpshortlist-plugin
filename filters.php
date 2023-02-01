@@ -18,23 +18,30 @@ function wpshortlist_get_config() {
 	}
 	*/
 	
-	$tax_name   = 'wp_feature';
-	$taxonomy   = get_taxonomy( $tax_name );
-	$post_types = [ 'tool' ];
+	/*
+	 * Filter setup
+	 */
+	$tax_name       = 'wp_feature';
+	$taxonomy       = get_taxonomy( $tax_name );
+	$taxonomy_title = $taxonomy ? $taxonomy->labels->singular_name : 'Taxonomy not found';
+
+	$filter_set_base = [
+		'name'           => '',
+		'term'           => '',
+		'taxonomy'       => $tax_name,
+		'taxonomy_title' => $taxonomy_title,
+		'post_types'     => [ 'tool' ],
+		'filters'        => [],
+	];
 
 	/*
 	 * Display Term List
 	 */
 	$term = 'display-term-list';  // must match term slug
 
-	$filter_sets[] = [
-		// should name be pulled from term?
-		'name'           => __( 'Display Term List', 'wpshortlist' ),
-		'taxonomy'       => $tax_name,
-		'taxonomy_title' => $taxonomy->labels->singular_name,
-		'term'           => $term,
-		'post_types'     => $post_types,
-		
+	$filter_sets[] = array_merge( $filter_set_base, [
+		'name'    => __( 'Display Term List', 'wpshortlist' ),
+		'term'    => $term,
 		'filters' => [
 			[
 				// Methods
@@ -63,20 +70,16 @@ function wpshortlist_get_config() {
 				],
 			],
 		]
-	];
+	] );
 		
 	/*
 	 * Display Terms Current Post
 	 */
 	$term = 'display-terms-current-post';
 	
-	$filter_sets[] = [
-		'name'           => __( 'Display Terms Current Post', 'wpshortlist' ),
-		'taxonomy'       => $tax_name,
-		'taxonomy_title' => $taxonomy->labels->singular_name,
-		'term'           => $term,
-		'post_types'     => $post_types,
-		
+	$filter_sets[] = array_merge( $filter_set_base, [
+		'name'    => __( 'Display Terms Current Post', 'wpshortlist' ),
+		'term'    => $term,
 		'filters' => [
 			[ 
 				// Methods
@@ -106,7 +109,7 @@ function wpshortlist_get_config() {
 				],
 			],
 		]
-	];
+	] );
 
 	return $filter_sets;
 }
@@ -216,9 +219,10 @@ function wpshortlist_get_current_query_args() {
  * 
  */
 function wpshortlist_alter_query( $query ) {
-	if ( is_admin() || ! $query->is_main_query() || isset( $query->query['favicon'] ) ) {
+	if ( ! wpshortlist_ok_modify() ) {
 		return;
 	}
+
 	q2($query->query,'pre_get_posts: query->query');
 	
 	$meta_query = '';
@@ -250,3 +254,11 @@ function wpshortlist_alter_query( $query ) {
 }
 
 add_action( 'pre_get_posts', 'wpshortlist_alter_query' );
+
+/**
+ * If it's OK to modify or debug stuff like the main query. 
+ * This can become more robust.
+ */
+function wpshortlist_ok_modify() {
+	return ( is_post_type_archive( ['tool'] ) || is_tax( [ 'wp_feature' ] ) );
+}
