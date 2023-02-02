@@ -56,21 +56,25 @@ function wpshortlist_register_taxonomy__wp_feature() {
 		 * if using proxy, `rewrite` and `query_var` recommended but not required
 		 */
 		// 'rewrite' => true,
-		'rewrite' => [ 'slug' => 'features', 'with_front' => true, ],   // usually plural
+		'rewrite' => [ 
+			'slug'       => 'features',   // usually plural
+			'with_front' => true, 
+		],
 		// 'query_var' => true,
 		'query_var' => 'feature',   // usually singular
 
 		'show_admin_column' => true,
 
+		/*
+		 * Don't comment out in case something enables the classic editor.
+		 */
 		'show_in_rest' => true,
 		'rest_base' => 'wp_feature',
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
 		'rest_namespace' => 'wp/v2',
 
-		/*
-		 * 3rd party
-		 */
-		'show_in_graphql' => false,
+		// custom
+		'path' => 'features',
 	];
 
 	register_taxonomy( 'wp_feature', [ 'tool' ], $args );

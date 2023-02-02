@@ -67,10 +67,8 @@ function wpshortlist_register_taxonomy__wp_category() {
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
 		'rest_namespace' => 'wp/v2',
 		
-		/*
-		 * 3rd party 
-		 */
-		'show_in_graphql' => false,
+		// custom
+		'path' => 'wp-category',
 	];
 
 	register_taxonomy( 'wp_category', [ 'tool' ], $args );

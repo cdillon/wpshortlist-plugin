@@ -86,10 +86,8 @@ function wpshortlist_register_taxonomy__tool_type() {
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
 		'rest_namespace' => 'wp/v2',
 
-		/*
-		 * 3rd party
-		 */
-		'show_in_graphql' => false,
+		// custom
+		// 'path' => '',
 	];
 
 	register_taxonomy( 'tool_type', [ 'tool' ], $args );
