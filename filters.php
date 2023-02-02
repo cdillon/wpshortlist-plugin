@@ -1,21 +1,7 @@
 <?php
-
 /**
- * Register our query vars.
+ * The Filters
  */
-function wpshortlist_register_query_vars( $vars ) {
-	$config = wpshortlist_get_config();
-	
-	foreach ( $config as $filter_set ) {
-		foreach ( $filter_set['filters'] as $filter ) {
-			$vars[] = $filter['query_var'];
-		}
-	}
-	
-	return $vars;
-}
-
-add_filter( 'query_vars', 'wpshortlist_register_query_vars' );
 
 /**
  * Print our filters. Called by widget.
@@ -91,47 +77,4 @@ function wpshortlist_get_current_query_args() {
 	*/
 	global $wp_query;
 	return $wp_query->query;
-}
-
-/**
- * 
- */
-function wpshortlist_alter_query( $query ) {
-	if ( ! wpshortlist_ok_modify() ) {
-		return;
-	}
-	// q2($query->query,'pre_get_posts: query->query');
-	
-	$meta_query = [];
-	// $meta_query['relation'] = 'AND';   // 'OR' or 'AND' (default)
-
-	$config = wpshortlist_get_config();
-
-	foreach ( $config as $filter_set ) {
-		foreach ( $filter_set['filters'] as $filter ) {
-
-			if ( isset( $query->query[ $filter['query_var'] ] ) ) {
-				$meta_query[] = [
-					'key'     => $filter['query_var'],
-					'value'   => [ $query->query[ $filter['query_var'] ] ],
-					'compare' => 'IN',
-				];
-					
-			}
-			
-		}
-	}
-
-	$query->set( 'meta_query', $meta_query );
-	// q2($meta_query,'new meta query');
-}
-
-add_action( 'pre_get_posts', 'wpshortlist_alter_query' );
-
-/**
- * If it's OK to modify or debug stuff like the main query. 
- * This can become more robust.
- */
-function wpshortlist_ok_modify() {
-	return ( is_post_type_archive( ['tool'] ) || is_tax( [ 'wp_feature' ] ) );
 }
