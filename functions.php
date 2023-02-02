@@ -20,7 +20,7 @@ function wpshortlist_get_all_post_meta() {
 	foreach ( $results as $result ) {
 		$meta_values[] = $result['meta_value'];
 	}
-	q2($meta_values,'meta_values');
+	// q2($meta_values,'meta_values');
 
 	return $meta_values;
 }

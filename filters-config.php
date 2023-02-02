@@ -123,6 +123,7 @@ function wpshortlist_set_config() {
 		]
 	] );
 
+	q2($filter_sets,'','o','filter-sets.log');
 	update_option( 'wpshortlist_filters', $filter_sets );
 }
 
