@@ -11,8 +11,6 @@ add_action( 'init', function () {
 function wpshortlist_set_filter_templates() {
 	$templates = [
 		'default' => 'Default',
-		'basic'   => 'Basic',
-		'test'    => 'test',
 	];	
 
 	update_option( 'wpshortlist_filter_templates', apply_filters( 'wpshortlist_filter_templates', $templates ) );
