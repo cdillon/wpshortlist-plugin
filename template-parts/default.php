@@ -45,7 +45,7 @@ HTML Structure:
 			<fieldset>
 				<legend>
 					<h3 class="wpshortlist-filter-heading">
-						<?php esc_html( $filter['name'] ); ?>
+						<?php echo esc_html( $filter['name'] ); ?>
 					</h3>
 				</legend>
 				<ul class="wpshortlist-filter-list">
@@ -70,7 +70,7 @@ HTML Structure:
 							<?php echo esc_html( $option_name ); ?>
 						</label>
 					</li>
-
+					
 					<?php endforeach; /* filter options */ ?>
 				</ul>
 			</fieldset>
