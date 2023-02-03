@@ -1,10 +1,12 @@
 <?php
 /**
  * Default filter template.
+ *
+ * @package wpshortlist
  */
 
 /*
-Structure:
+HTML Structure:
 
 <form id="wpshortlist-form" class="wpshortlist-form">
 	<div class="wpshortlist-filterset">
@@ -25,53 +27,55 @@ Structure:
 </form>
 */
 
-echo '<form id="wpshortlist-form" class="wpshortlist-form">';
+?>
+<form id="wpshortlist-form" class="wpshortlist-form">
+	<?php
+	foreach ( $config as $filter_set ) :
+		// Is this filter set for this term?
+		if ( ! is_tax( $filter_set['taxonomy'], $filter_set['term'] ) ) {
+			continue;
+		}
+		?>
+	<div class="wpshortlist-filterset">
+		<?php
+		// Print filter.
+		foreach ( $filter_set['filters'] as $filter ) :
+			?>
+		<div class="wpshortlist-filter">
+			<fieldset>
+				<legend>
+					<h3 class="wpshortlist-filter-heading">
+						<?php esc_html( $filter['name'] ); ?>
+					</h3>
+				</legend>
+				<ul class="wpshortlist-filter-list">
+					<?php
+					foreach ( $filter['options'] as $option_id => $option_name ) :
 
-foreach ( $config as $filter_set ) {
-	// Is this filter set for this term?
-	if ( ! is_tax( $filter_set['taxonomy'], $filter_set['term'] ) ) {
-		continue;
-	}
+						// Build a unique ID like 'supports-display-term-list-tags'.
+						$unique_id = $filter['query_var'] . '-' . $option_id;
 
-	echo '<div class="wpshortlist-filterset">';
+						$checked = isset( $current_args[ $filter['query_var'] ] )
+							&& $option_id === $current_args[ $filter['query_var'] ];
 
-	// Print filter
-	foreach ( $filter_set['filters'] as $filter ) {
+						?>
+					<li class="wpshortlist-filter-list-item">
+						<input type="radio"
+								id="<?php echo esc_attr( $unique_id ); ?>"
+								name="<?php echo esc_attr( $filter['id'] ); ?>"
+								value="<?php echo esc_attr( $option_id ); ?>"
+								title="<?php echo esc_attr( $option_id ); ?>"
+								<?php checked( $checked ); ?> />
+						<label for="<?php echo esc_attr( $unique_id ); ?>">
+							<?php echo esc_html( $option_name ); ?>
+						</label>
+					</li>
 
-echo '<div class="wpshortlist-filter">';
-echo '<fieldset>';
-echo '<legend>';
-echo '<h3 class="wpshortlist-filter-heading">' . esc_html( $filter['name'] ) . '</h3>';
-echo '</legend>';
-
-echo '<ul class="wpshortlist-filter-list">';
-
-foreach ( $filter['options'] as $option_id => $option_name ) {
-	
-	$unique_id = $filter['query_var'] . '-' . $option_id;  // like 'supports-display-term-list-tags'
-	$checked   = isset( $current_args[ $filter['query_var'] ] ) && $option_id == $current_args[ $filter['query_var'] ];
-
-	echo '<li class="wpshortlist-filter-list-item">';
-
-	printf( '<input type="radio" id="%1$s" name="%2$s" value="%3$s" title="%3$s" %4$s/>', 
-		$unique_id,
-		$filter['id'],
-		$option_id, 
-		$checked ? 'checked="checked"' : '',
-	);
-
-	printf( '<label for="%s">%s</label>', $unique_id, $option_name );
-
-	echo '</li>';
-
-}
-
-echo '</ul>';
-echo '</fieldset>';
-echo '</div><!-- .wpshortlist-filter -->';
-
-}
-echo '</div><!-- .wpshortlist-filterset -->';
-}
-
-echo '</form>';
+					<?php endforeach; /* filter options */ ?>
+				</ul>
+			</fieldset>
+		</div><!-- .wpshortlist-filter -->
+		<?php endforeach; ?>
+	</div><!-- .wpshortlist-filterset -->
+	<?php endforeach; ?>
+</form>
