@@ -21,7 +21,7 @@ function wpshortlist_filters() {
 
 	if ( false === $template_found ) {
 		// Load default.
-		include 'template-parts/default.php';
+		include WPSHORTLIST_TPL_DIR . 'default.php';
 	}
 }
 

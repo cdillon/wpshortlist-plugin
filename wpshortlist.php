@@ -16,19 +16,22 @@
  * Author URI: https://chrisdillon.dev
  */
 
+define( 'WPSHORTLIST_INC_DIR', plugin_dir_path( __FILE__ ) . 'inc/' );
+define( 'WPSHORTLIST_TPL_DIR', plugin_dir_path( __FILE__ ) . 'template-parts/' );
+
 /**
  * Load files.
  */
-require_once plugin_dir_path( __FILE__ ) . 'functions.php';
-require_once plugin_dir_path( __FILE__ ) . 'functions-ajax.php';
-require_once plugin_dir_path( __FILE__ ) . 'functions-query.php';
-require_once plugin_dir_path( __FILE__ ) . 'functions-meta-box.php';
-require_once plugin_dir_path( __FILE__ ) . 'post-types.php';
-require_once plugin_dir_path( __FILE__ ) . 'taxonomies.php';
-require_once plugin_dir_path( __FILE__ ) . 'filters.php';
-require_once plugin_dir_path( __FILE__ ) . 'filters-config.php';
-require_once plugin_dir_path( __FILE__ ) . 'filters-templates.php';
-require_once plugin_dir_path( __FILE__ ) . 'class-wpshortlist-widget.php';
+require_once WPSHORTLIST_INC_DIR . 'functions.php';
+require_once WPSHORTLIST_INC_DIR . 'functions-ajax.php';
+require_once WPSHORTLIST_INC_DIR . 'functions-query.php';
+require_once WPSHORTLIST_INC_DIR . 'functions-meta-box.php';
+require_once WPSHORTLIST_INC_DIR . 'post-types.php';
+require_once WPSHORTLIST_INC_DIR . 'taxonomies.php';
+require_once WPSHORTLIST_INC_DIR . 'filters.php';
+require_once WPSHORTLIST_INC_DIR . 'filters-config.php';
+require_once WPSHORTLIST_INC_DIR . 'filters-templates.php';
+require_once WPSHORTLIST_INC_DIR . 'class-wpshortlist-widget.php';
 
 /**
  * On plugin activation.
