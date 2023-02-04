@@ -12,16 +12,6 @@ function wpshortlist_filters() {
 
 	// Get current URL without args (the CPT/CT permalink only).
 	$current_url = wpshortlist_get_current_url();
-	// phpcs:ignore
-	// q2($current_url,__FUNCTION__.': current_url');
-
-	// Get query args (our post meta).
-	$current_args = wpshortlist_get_current_query_args();
-
-	// Remove CPT/CT.
-	unset( $current_args['feature'] );
-	// phpcs:ignore
-	// q2($current_args, __FUNCTION__.': current_args');
 
 	// Filter sets.
 	$config = wpshortlist_get_config();
@@ -40,24 +30,7 @@ function wpshortlist_filters() {
  */
 function wpshortlist_get_current_url() {
 	global $wp;
-	// phpcs:ignore
-	// q2($wp->request,'wp->request');
 	return trailingslashit( home_url( add_query_arg( array(), $wp->request ) ) );
-}
-
-/**
- * Get the current query args.
- */
-function wpshortlist_get_current_query_args() {
-	// phpcs:ignore
-	/* wp_query->query = Array
-		(
-			[feature] => display-term-list
-			[method-display-term-list] => block
-		)
-	*/
-	global $wp_query;
-	return $wp_query->query;
 }
 
 /**
@@ -76,8 +49,7 @@ function wpshortlist_print_filter_list( $filter ) {
 		// Build a unique ID like 'supports-display-term-list-tags'.
 		$input_id = $filter['query_var'] . '-' . $option_id;
 
-		$checked = isset( $current_args[ $filter['query_var'] ] )
-			&& $option_id === $current_args[ $filter['query_var'] ];
+		$checked = get_query_var( $filter['query_var'] === $option_id );
 
 		$args = array(
 			'id'      => $input_id,
