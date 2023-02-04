@@ -18,8 +18,8 @@ function wpshortlist_get_config() {
  * Return the filter set for the current taxonomy and term
  * or a specific taxonomy and term. Returns false if not found.
  *
- * @param  string $the_tax   A taxonomy.
- * @param  string $the_term  A term.
+ * @param string $the_tax   A taxonomy.
+ * @param string $the_term  A term.
  *
  * @return array|false
  */

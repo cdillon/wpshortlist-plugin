@@ -36,7 +36,7 @@ function wpshortlist_get_current_url() {
 /**
  * Print filter list.
  *
- * @param Array $filter  A filter.
+ * @param array $filter  A filter.
  *
  * @return void
  */
@@ -70,7 +70,7 @@ function wpshortlist_print_filter_list( $filter ) {
 /**
  * Print filter list item.
  *
- * @param Array $args  HTML input attributes.
+ * @param array $args  HTML input attributes.
  *
  * @return void
  */
