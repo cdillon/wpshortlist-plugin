@@ -1,7 +1,9 @@
 <?php
 /**
  * Filter Configuration
- * 
+ *
+ * @package wpshortlist
+ *
  * @todo This is one of the first things that should be converted to a class.
  */
 
@@ -13,15 +15,41 @@ function wpshortlist_get_config() {
 }
 
 /**
+ * Return the filter set for the current taxonomy and term
+ * or a specific taxonomy and term. Returns false if not found.
+ *
+ * @param  string $the_tax   A taxonomy.
+ * @param  string $the_term  A term.
+ *
+ * @return array|false
+ */
+function wpshortlist_get_filter_set( $the_tax = '', $the_term = '' ) {
+	$the_tax  = $the_tax ? $the_tax : get_query_var( 'taxonomy' );
+	$the_term = $the_term ? $the_term : get_query_var( 'term' );
+
+	$config = wpshortlist_get_config();
+
+	foreach ( $config as $filter_set ) {
+		if ( $filter_set['taxonomy'] === $the_tax && $filter_set['term'] === $the_term ) {
+			return $filter_set;
+		}
+	}
+
+	return false;
+}
+
+/**
  * Create our filter configuration.
- * 
+ *
  * Tools have Features. Features have unique Methods and Supports. Define them here.
  */
 function wpshortlist_set_config() {
 
-	$filter_sets = [];
+	$filter_sets = array();
+
+	// phpcs:ignore
 	/*
-	// Loop:
+	Loop:
 	foreach ( $config as $filter_set ) {
 		foreach ( $filter_set['filters'] as $filter ) {
 			foreach ( $filter['options'] as $option_id => $option_name ) {
@@ -29,7 +57,7 @@ function wpshortlist_set_config() {
 		}
 	}
 	*/
-	
+
 	/*
 	 * Filter setup
 	 */
@@ -61,7 +89,7 @@ function wpshortlist_set_config() {
 				'id'            => 'method',
 				'query_var'     => 'method' . '-' . $term,
 				'meta_box_type' => 'checkbox_list',
-				
+
 				'options'       => [
 					'block'     => 'block',
 					'widget'    => 'widget',
@@ -74,32 +102,32 @@ function wpshortlist_set_config() {
 				'id'            => 'supports',
 				'query_var'     => 'supports' . '-' . $term,
 				'meta_box_type' => 'checkbox_list',
-				
+
 				'options'       => [
-					'categories'        => 'categories', 
-					'tags'              => 'tags', 
+					'categories'        => 'categories',
+					'tags'              => 'tags',
 					'custom-taxonomies' => 'custom taxonomies',
 				],
 			],
 		]
 	] );
-		
+
 	/*
 	 * Display Terms Current Post
 	 */
 	$term = 'display-terms-current-post';
-	
+
 	$filter_sets[] = array_merge( $filter_set_base, [
 		'name'    => __( 'Display Terms Current Post', 'wpshortlist' ),
 		'term'    => $term,
 		'filters' => [
-			[ 
+			[
 				// Methods
 				'name'          => __( 'Methods', 'wpshortlist' ),
 				'id'            => 'method',
 				'query_var'     => 'method' . '-' . $term,
 				'meta_box_type' => 'checkbox_list',
-				
+
 				'options'       => [
 					'automatic' => 'automatic',
 					'block'     => 'block',
@@ -113,7 +141,7 @@ function wpshortlist_set_config() {
 				'id'            => 'supports',
 				'query_var'     => 'supports' . '-' . $term,
 				'meta_box_type' => 'checkbox_list',
-				
+
 				'options'       => [
 					'categories'        => 'categories',
 					'tags'              => 'tags',

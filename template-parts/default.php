@@ -27,17 +27,12 @@ HTML Structure:
 </form>
 */
 
+$filter_set = wpshortlist_get_filter_set();
+if ( ! $filter_set ) {
+	return;
+}
 ?>
 <form id="wpshortlist-form" class="wpshortlist-form">
-	<?php
-	// @todo Replace this with getter(tax, term).
-	foreach ( $config as $filter_set ) :
-		// Is this filter set for this term?
-		if ( ! is_tax( $filter_set['taxonomy'], $filter_set['term'] ) ) {
-			continue;
-		}
-		?>
-
 	<div class="wpshortlist-filterset">
 		<?php foreach ( $filter_set['filters'] as $filter ) : ?>
 
@@ -54,6 +49,4 @@ HTML Structure:
 
 		<?php endforeach; ?>
 	</div><!-- .wpshortlist-filterset -->
-
-	<?php endforeach; ?>
 </form>
