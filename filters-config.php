@@ -65,93 +65,100 @@ function wpshortlist_set_config() {
 	$taxonomy       = get_taxonomy( $tax_name );
 	$taxonomy_title = $taxonomy ? $taxonomy->labels->singular_name : 'Taxonomy not found';
 
-	$filter_set_base = [
+	$filter_set_base = array(
 		'name'           => '',
 		'term'           => '',
 		'taxonomy'       => $tax_name,
 		'taxonomy_title' => $taxonomy_title,
-		'post_types'     => [ 'tool' ],
-		'filters'        => [],
-	];
+		'post_types'     => array( 'tool' ),
+		'filters'        => array(),
+	);
 
 	/*
 	 * Display Term List
 	 */
-	$term = 'display-term-list';  // must match term slug
+	$term = 'display-term-list';  // Must match term slug.
 
-	$filter_sets[] = array_merge( $filter_set_base, [
-		'name'    => __( 'Display Term List', 'wpshortlist' ),
-		'term'    => $term,
-		'filters' => [
-			[
-				// Methods
-				'name'          => __( 'Methods', 'wpshortlist' ),
-				'id'            => 'method',
-				'query_var'     => 'method' . '-' . $term,
-				'meta_box_type' => 'checkbox_list',
+	$filter_sets[] = array_merge(
+		$filter_set_base,
+		array(
+			'name'    => __( 'Display Term List', 'wpshortlist' ),
+			'term'    => $term,
+			'filters' => array(
+				array(
+					// Methods.
+					'name'          => __( 'Methods', 'wpshortlist' ),
+					'id'            => 'method',
+					'query_var'     => "method-{$term}",
+					'meta_box_type' => 'checkbox_list',
 
-				'options'       => [
-					'block'     => 'block',
-					'widget'    => 'widget',
-					'shortcode' => 'shortcode',
-				],
-			],
-			[
-				// Supports
-				'name'          => __( 'Supports', 'wpshortlist' ),
-				'id'            => 'supports',
-				'query_var'     => 'supports' . '-' . $term,
-				'meta_box_type' => 'checkbox_list',
+					'options'       => array(
+						'block'     => 'block',
+						'widget'    => 'widget',
+						'shortcode' => 'shortcode',
+					),
+				),
+				array(
+					// Supports.
+					'name'          => __( 'Supports', 'wpshortlist' ),
+					'id'            => 'supports',
+					'query_var'     => "supports-{$term}",
+					'meta_box_type' => 'checkbox_list',
 
-				'options'       => [
-					'categories'        => 'categories',
-					'tags'              => 'tags',
-					'custom-taxonomies' => 'custom taxonomies',
-				],
-			],
-		]
-	] );
+					'options'       => array(
+						'categories'        => 'categories',
+						'tags'              => 'tags',
+						'custom-taxonomies' => 'custom taxonomies',
+					),
+				),
+			),
+		)
+	);
 
 	/*
 	 * Display Terms Current Post
 	 */
 	$term = 'display-terms-current-post';
 
-	$filter_sets[] = array_merge( $filter_set_base, [
-		'name'    => __( 'Display Terms Current Post', 'wpshortlist' ),
-		'term'    => $term,
-		'filters' => [
-			[
-				// Methods
-				'name'          => __( 'Methods', 'wpshortlist' ),
-				'id'            => 'method',
-				'query_var'     => 'method' . '-' . $term,
-				'meta_box_type' => 'checkbox_list',
+	$filter_sets[] = array_merge(
+		$filter_set_base,
+		array(
+			'name'    => __( 'Display Terms Current Post', 'wpshortlist' ),
+			'term'    => $term,
+			'filters' => array(
+				array(
+					// Method.
+					'name'          => __( 'Methods', 'wpshortlist' ),
+					'id'            => 'method',
+					'query_var'     => "method-{$term}",
+					'meta_box_type' => 'checkbox_list',
 
-				'options'       => [
-					'automatic' => 'automatic',
-					'block'     => 'block',
-					'widget'    => 'widget',
-					'shortcode' => 'shortcode',
-				]
-			],
-			[
-				// Supports
-				'name'          => __( 'Supports', 'wpshortlist' ),
-				'id'            => 'supports',
-				'query_var'     => 'supports' . '-' . $term,
-				'meta_box_type' => 'checkbox_list',
+					'options'       => array(
+						'automatic' => 'automatic',
+						'block'     => 'block',
+						'widget'    => 'widget',
+						'shortcode' => 'shortcode',
+					),
+				),
+				array(
+					// Supports.
+					'name'          => __( 'Supports', 'wpshortlist' ),
+					'id'            => 'supports',
+					'query_var'     => "supports-{$term}",
+					'meta_box_type' => 'checkbox_list',
 
-				'options'       => [
-					'categories'        => 'categories',
-					'tags'              => 'tags',
-					'custom-taxonomies' => 'custom taxonomies',
-				],
-			],
-		]
-	] );
+					'options'       => array(
+						'categories'        => 'categories',
+						'tags'              => 'tags',
+						'custom-taxonomies' => 'custom taxonomies',
+					),
+				),
+			),
+		)
+	);
 
-	q2($filter_sets,'','o','filter-sets.log');
+	q2( $filter_sets, '', 'o', 'filter-sets.log' );
+
 	update_option( 'wpshortlist_filters', $filter_sets );
 }
 
