@@ -87,7 +87,7 @@ function wpshortlist_set_config() {
 			'filters' => array(
 				array(
 					// Methods.
-					'name'          => __( 'Methods', 'wpshortlist' ),
+					'name'          => __( 'How', 'wpshortlist' ),
 					'id'            => 'method',
 					'query_var'     => "method-{$term}",
 					'meta_box_type' => 'checkbox_list',
@@ -102,7 +102,7 @@ function wpshortlist_set_config() {
 				),
 				array(
 					// Supports.
-					'name'          => __( 'Supports', 'wpshortlist' ),
+					'name'          => __( 'For', 'wpshortlist' ),
 					'id'            => 'supports',
 					'query_var'     => "supports-{$term}",
 					'meta_box_type' => 'checkbox_list',
@@ -133,7 +133,7 @@ function wpshortlist_set_config() {
 			'filters' => array(
 				array(
 					// Method.
-					'name'          => __( 'Methods', 'wpshortlist' ),
+					'name'          => __( 'How', 'wpshortlist' ),
 					'id'            => 'method',
 					'query_var'     => "method-{$term}",
 					'meta_box_type' => 'checkbox_list',
@@ -149,7 +149,7 @@ function wpshortlist_set_config() {
 				),
 				array(
 					// Supports.
-					'name'          => __( 'Supports', 'wpshortlist' ),
+					'name'          => __( 'For', 'wpshortlist' ),
 					'id'            => 'supports',
 					'query_var'     => "supports-{$term}",
 					'meta_box_type' => 'checkbox_list',
