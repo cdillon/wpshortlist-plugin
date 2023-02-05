@@ -69,42 +69,18 @@ function wpshortlist_print_filter_list( $filter ) {
 }
 
 /**
- * Print filter list item.
+ * Print filter list item (radio or checkbox).
+ *
+ * Using `echo esc_attr` instead of `esc_attr_e` to please PHPCS.
  *
  * @param array $args  HTML input attributes.
  *
  * @return void
  */
 function wpshortlist_filter_list_item( $args ) {
-	switch ( $args['type'] ) {
-		case 'radio':
-			wpshortlist_filter_list_item_radio( $args );
-			break;
-		default:
-			wpshortlist_filter_list_item_checkbox( $args );
-	}
-}
-
-function wpshortlist_filter_list_item_radio( $args ) {
 	?>
 	<li class="wpshortlist-filter-list-item">
-		<input type="radio"
-			id="<?php echo esc_attr( $args['id'] ); ?>"
-			name="<?php echo esc_attr( $args['name'] ); ?>"
-			value="<?php echo esc_attr( $args['value'] ); ?>"
-			title="<?php echo esc_attr( $args['title'] ); ?>"
-			<?php checked( $args['checked'] ); ?> />
-		<label for="<?php echo esc_attr( $args['id'] ); ?>">
-			<?php echo esc_html( $args['label'] ); ?>
-		</label>
-	</li>
-	<?php
-}
-
-function wpshortlist_filter_list_item_checkbox( $args ) {
-	?>
-	<li class="wpshortlist-filter-list-item">
-		<input type="checkbox"
+		<input type="<?php echo esc_attr( $args['type'] ); ?>"
 			id="<?php echo esc_attr( $args['id'] ); ?>"
 			name="<?php echo esc_attr( $args['name'] ); ?>"
 			value="<?php echo esc_attr( $args['value'] ); ?>"
