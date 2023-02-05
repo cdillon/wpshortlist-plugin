@@ -59,7 +59,12 @@ register_deactivation_hook( __FILE__, 'wpshortlist_deactivate' );
  * Load scripts and styles.
  */
 function wpshortlist_enqueue_scripts() {
-	// @todo Only load on our CPT/CT archive.
+	// Only load on our CPT/CT archives.
+	// @todo Get CPT/CT from config.
+	if ( ! is_tax( 'wp_feature' ) && ! is_post_type_archive( 'tool' ) ) {
+		return;
+	}
+
 	// @todo Get actual script version number.
 	wp_enqueue_script( 'wpshortlist', plugins_url( '/js/wpshortlist.js', __FILE__ ), array( 'jquery' ), '1.0', true );
 
