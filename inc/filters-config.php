@@ -91,6 +91,7 @@ function wpshortlist_set_config() {
 					'id'            => 'method',
 					'query_var'     => "method-{$term}",
 					'meta_box_type' => 'checkbox_list',
+					'input_type'    => 'radio',
 
 					'options'       => array(
 						'block'     => 'block',
@@ -104,6 +105,7 @@ function wpshortlist_set_config() {
 					'id'            => 'supports',
 					'query_var'     => "supports-{$term}",
 					'meta_box_type' => 'checkbox_list',
+					'input_type'    => 'checkbox',
 
 					'options'       => array(
 						'categories'        => 'categories',
@@ -132,6 +134,7 @@ function wpshortlist_set_config() {
 					'id'            => 'method',
 					'query_var'     => "method-{$term}",
 					'meta_box_type' => 'checkbox_list',
+					'input_type'    => 'radio',
 
 					'options'       => array(
 						'automatic' => 'automatic',
@@ -146,6 +149,7 @@ function wpshortlist_set_config() {
 					'id'            => 'supports',
 					'query_var'     => "supports-{$term}",
 					'meta_box_type' => 'checkbox_list',
+					'input_type'    => 'checkbox',
 
 					'options'       => array(
 						'categories'        => 'categories',

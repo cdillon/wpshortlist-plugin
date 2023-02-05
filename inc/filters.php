@@ -52,8 +52,9 @@ function wpshortlist_print_filter_list( $filter ) {
 		$checked = get_query_var( $filter['query_var'] === $option_id );
 
 		$args = array(
+			'type'    => $filter['input_type'],
 			'id'      => $input_id,
-			'name'    => $filter['id'],
+			'name'    => $filter['query_var'],
 			'value'   => $option_id,
 			'title'   => $option_id,
 			'label'   => $option_name,
@@ -75,9 +76,35 @@ function wpshortlist_print_filter_list( $filter ) {
  * @return void
  */
 function wpshortlist_filter_list_item( $args ) {
+	switch ( $args['type'] ) {
+		case 'radio':
+			wpshortlist_filter_list_item_radio( $args );
+			break;
+		default:
+			wpshortlist_filter_list_item_checkbox( $args );
+	}
+}
+
+function wpshortlist_filter_list_item_radio( $args ) {
 	?>
 	<li class="wpshortlist-filter-list-item">
 		<input type="radio"
+			id="<?php echo esc_attr( $args['id'] ); ?>"
+			name="<?php echo esc_attr( $args['name'] ); ?>"
+			value="<?php echo esc_attr( $args['value'] ); ?>"
+			title="<?php echo esc_attr( $args['title'] ); ?>"
+			<?php checked( $args['checked'] ); ?> />
+		<label for="<?php echo esc_attr( $args['id'] ); ?>">
+			<?php echo esc_html( $args['label'] ); ?>
+		</label>
+	</li>
+	<?php
+}
+
+function wpshortlist_filter_list_item_checkbox( $args ) {
+	?>
+	<li class="wpshortlist-filter-list-item">
+		<input type="checkbox"
 			id="<?php echo esc_attr( $args['id'] ); ?>"
 			name="<?php echo esc_attr( $args['name'] ); ?>"
 			value="<?php echo esc_attr( $args['value'] ); ?>"

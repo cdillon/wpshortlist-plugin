@@ -1,4 +1,8 @@
-document.addEventListener("DOMContentLoaded", function() {
+/**
+ * Filter Form
+ */
+
+document.addEventListener("DOMContentLoaded", function () {
 
 	// Bail if no form is present.
 	let wpshortlistForm = document.getElementById("wpshortlist-form");
@@ -11,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		let obj = {};
 		let formData = new FormData(form);
 		for (const key of formData.keys()) {
-			obj[key] = formData.get(key);
+			obj[key] = formData.getAll(key);
 		}
 		return obj;
 	};
@@ -27,25 +31,28 @@ document.addEventListener("DOMContentLoaded", function() {
 		const urlParams = new URLSearchParams(location.search);
 
 		// uncheck all inputs
-		wpshortlistForm.querySelectorAll('input').forEach( (input) => {
+		wpshortlistForm.querySelectorAll('input').forEach((input) => {
 			input.checked = false;
 		});
 
 		// recheck inputs that match query string
 		for (const [key, value] of urlParams.entries()) {
-			wpshortlistForm.querySelector(`#${key}-${value}`).checked = true;
+			let multipleValues = value.split('|');
+			for (singleValue of multipleValues) {
+				wpshortlistForm.querySelector(`#${key}-${singleValue}`).checked = true;
+			}
 		}
 	}
 
 	// Submit the form via Ajax and redirect.
 	function formChangeHandler(event) {
 		event.preventDefault();
-		
+
 		// Get URL path parts.
 		const currentUrl = new URL(window.location.href);
 		const urlPath = currentUrl.pathname.split('/')
-			.filter( function (el) { return el != '' });
-	
+			.filter(function (el) { return el != '' });
+
 		let formData = serializeForm(wpshortlistForm);
 
 		let allData = {
@@ -61,28 +68,28 @@ document.addEventListener("DOMContentLoaded", function() {
 		jQuery.post(
 			wpshortlistSettings.ajaxUrl,
 			allData,
-			function(response) {
+			function (response) {
 				if (response.success) {
 					console.log(response.data);
 					location.assign(response.data);
 				}
 			},
 		)
-		.done(function(msg) { console.log(msg) })
-		.fail(function(xhr, status, error) {
-			// error handling
-		});
-	}	
+			.done(function (msg) { console.log(msg) })
+			.fail(function (xhr, status, error) {
+				// error handling
+			});
+	}
 
 	// Let's go!
 
 	// Listen for changes.
-	wpshortlistForm.addEventListener( 'change', formChangeHandler, false );
-	
+	wpshortlistForm.addEventListener('change', formChangeHandler, false);
+
 	// Initiate the Back-button hack.
 	// The browser may not update the form upon going back.
 	// For example, if current page has 'tags' selected and user clicks back, the form will still show 'tags' as selected.
-	// I plan to build a robust breadcrumbs approach that hopefully users will use instead. 
+	// I plan to build a robust breadcrumbs approach that hopefully users will use instead.
 	delayTimer();
 
 });

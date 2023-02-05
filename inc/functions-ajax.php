@@ -1,6 +1,8 @@
 <?php
 /**
  * Ajax Functions
+ *
+ * @package wpshortlist
  */
 
 /**
@@ -9,6 +11,7 @@
 function wpshortlist_ajax_handler() {
 	check_admin_referer( 'wpshortlist', 'nonce' );
 
+	// phpcs:disable
 	// error_log(print_r($_REQUEST,true));
 	/*
 	Array
@@ -23,46 +26,43 @@ function wpshortlist_ajax_handler() {
 		[term] => display-term-list
 	)
 	*/
+	// phpcs:enable
 
 	/**
-	 * Error checking
+	 * Sanitize the request and get our values.
 	 */
 
-	// form values
-	$args = $_REQUEST['formData'];
-	if ( empty( $args ) ) {
+	$request = map_deep( wp_unslash( (array) $_REQUEST ), 'sanitize_text_field' );
+
+	// Get form values.
+	if ( ! isset( $request['formData'] ) ) {
+		wp_send_json_error();
+	}
+	$args = (array) $request['formData'];
+
+	// Get term.
+	if ( ! isset( $request['term'] ) || ! $request['term'] ) {
+		wp_send_json_error();
+	}
+	$current_term = $request['term'];
+
+	// Get taxonomy.
+	if ( ! isset( $request['taxonomy'] ) || ! $request['taxonomy'] ) {
 		wp_send_json_error();
 	}
 
-	// term
-	if ( ! isset( $_REQUEST['term'] ) || ! $_REQUEST['term'] ) {
-		wp_send_json_error();
-	}
-	$current_term = $_REQUEST['term'];
-
-	// taxonomy
-	if ( ! isset( $_REQUEST['taxonomy'] ) || ! $_REQUEST['taxonomy'] ) {
-		wp_send_json_error();
-	}
-	
-	$matching_taxonomies = get_taxonomies( 
-		[ 
+	$matching_taxonomies = get_taxonomies(
+		array(
 			'public' => true,
-			'path'   => $_REQUEST['taxonomy'],
-		], 
-		'names' 
+			'path'   => $request['taxonomy'],
+		),
+		'names'
 	);
-	/*
-	Array 
-	( 
-		[wp_feature] => wp_feature 
-	) 
-	*/
 
 	if ( empty( $matching_taxonomies ) ) {
 		wp_send_json_error();
 	}
-	
+
 	// Assuming only one taxonomy found.
 	$current_taxonomy = array_keys( $matching_taxonomies )[0];
 
@@ -71,37 +71,37 @@ function wpshortlist_ajax_handler() {
 	 */
 
 	// Get link to the current taxonomy/term.
-	$new_url  = get_term_link( $current_term, $current_taxonomy );
-	
-	// Append the query vars from our filter config.
-	$new_args = [];
-	$config   = wpshortlist_get_config();
+	$new_url = get_term_link( $current_term, $current_taxonomy );
 
-	foreach ( $config as $filter_set ) {
+	// Assemble the query vars.
+	$new_args   = array();
+	$filter_set = wpshortlist_get_filter_set( $current_taxonomy, $current_term );
 
-		// can this be simplified with some config getters?
-		if ( $current_term == $filter_set['term'] 
-				&& $current_taxonomy == $filter_set['taxonomy'] ) {
-
-			foreach ( $filter_set['filters'] as $filter ) {
-				foreach ( $args as $arg_key => $arg_value ) {
-					if ( $arg_key == $filter['id'] && in_array( $arg_value, array_keys( $filter['options'] ) ) ) {
-						// if ( ! isset( $new_args[ $filter['query_var'] ] ) ) {
-							$new_args[ $filter['query_var'] ] = $arg_value;
-						// }
+	foreach ( $filter_set['filters'] as $filter ) {
+		$option_names = array_keys( $filter['options'] );
+		foreach ( $args as $arg_key => $arg_values ) {
+			if ( $arg_key === $filter['query_var'] ) {
+				foreach ( $arg_values as $arg_value ) {
+					if ( in_array( $arg_value, $option_names, true ) ) {
+						$new_args[ $arg_key ][] = $arg_value;
 					}
 				}
 			}
 		}
-
 	}
-	
+
+	// Create query string from multiple values.
+	foreach ( $new_args as $qkey => $qval ) {
+		$new_args[ $qkey ] = implode( '|', $qval );
+	}
+
 	// Assemble the URL.
 	if ( $new_args ) {
 		$new_url = add_query_arg( $new_args, $new_url );
-		// error_log($new_url);
 		wp_send_json_success( $new_url );
 	}
+
+	wp_send_json_error();
 }
 
 add_action( 'wp_ajax_filter_change', 'wpshortlist_ajax_handler' );
