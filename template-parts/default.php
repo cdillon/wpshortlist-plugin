@@ -43,6 +43,7 @@ if ( ! $filter_set ) {
 						<?php echo esc_html( $filter['name'] ); ?>
 					</h3>
 				</legend>
+				<?php wpshortlist_print_filter_reset( $filter ); ?>
 				<?php wpshortlist_print_filter_list( $filter ); ?>
 			</fieldset>
 		</div><!-- .wpshortlist-filter -->

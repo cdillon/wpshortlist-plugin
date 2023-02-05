@@ -92,3 +92,22 @@ function wpshortlist_filter_list_item( $args ) {
 	</li>
 	<?php
 }
+
+/**
+ * Print a reset link for a single filter.
+ *
+ * @param  array $filter  A filter.
+ *
+ * @return void
+ */
+function wpshortlist_print_filter_reset( $filter ) {
+	?>
+	<div>
+		<a class="reset-filter-link"
+			href="#"
+			data-filter_name = "<?php echo esc_attr( $filter['query_var'] ); ?>">
+			<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
+		</a>
+	</div>
+	<?php
+}

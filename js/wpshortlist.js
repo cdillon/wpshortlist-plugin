@@ -25,7 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		let timeoutID = setTimeout(updateAnOutdatedForm, 50);
 	}
 
-	// Ensure the form matches the query string in case use hits the Back button. **EXPERIMENTAL**
+	// Ensure the form matches the query string in case user hits
+	// the Back button. **EXPERIMENTAL**
 	function updateAnOutdatedForm() {
 		// Get the query string data.
 		const urlParams = new URLSearchParams(location.search);
@@ -39,7 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		for (const [key, value] of urlParams.entries()) {
 			let multipleValues = value.split('|');
 			for (singleValue of multipleValues) {
-				wpshortlistForm.querySelector(`#${key}-${singleValue}`).checked = true;
+				wpshortlistForm.querySelector(`#${key}-${singleValue}`)
+					.checked = true;
 			}
 		}
 	}
@@ -50,17 +52,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		// Get URL path parts.
 		const currentUrl = new URL(window.location.href);
-		const urlPath = currentUrl.pathname.split('/')
-			.filter(function (el) { return el != '' });
-
-		let formData = serializeForm(wpshortlistForm);
 
 		let allData = {
 			'action': wpshortlistSettings.action,
 			'nonce': wpshortlistSettings.nonce,
-			'formData': formData,
-			'taxonomy': urlPath[0],
-			'term': urlPath[1],
+			'pathname': currentUrl.pathname
+		}
+
+		let formData = serializeForm(wpshortlistForm);
+		if (FormData) {
+			allData.formData = formData;
 		}
 
 		// Why are we still using jQuery in WordPress in 2023?!
@@ -81,10 +82,31 @@ document.addEventListener("DOMContentLoaded", function () {
 			});
 	}
 
+	// Reset a single filter.
+	function resetFilter(event) {
+		event.preventDefault();
+
+		// Uncheck this filter's inputs.
+		let name = event.target.dataset.filter_name;
+		document.getElementsByName(`${name}`).forEach((input) => {
+			input.checked = false;
+		});
+
+		// Trigger the change event.
+		const formChange = new Event('change');
+		wpshortlistForm.dispatchEvent(formChange);
+	}
+
 	// Let's go!
 
 	// Listen for changes.
 	wpshortlistForm.addEventListener('change', formChangeHandler, false);
+
+	wpshortlistForm.querySelectorAll('a.reset-filter-link')
+		.forEach((el) => {
+			el.addEventListener('click', resetFilter, false);
+		});
+
 
 	// Initiate the Back-button hack.
 	// The browser may not update the form upon going back.
