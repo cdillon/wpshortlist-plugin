@@ -92,6 +92,7 @@ function wpshortlist_set_config() {
 					'query_var'     => "method-{$term}",
 					'meta_box_type' => 'checkbox_list',
 					'input_type'    => 'radio',
+					'relation'      => 'OR',
 
 					'options'       => array(
 						'block'     => 'block',
@@ -106,6 +107,8 @@ function wpshortlist_set_config() {
 					'query_var'     => "supports-{$term}",
 					'meta_box_type' => 'checkbox_list',
 					'input_type'    => 'checkbox',
+					'relation'      => 'AND',
+					'relation_desc' => __( 'Tool must support all selected options.', 'wpshortlist' ),
 
 					'options'       => array(
 						'categories'        => 'categories',
@@ -135,6 +138,7 @@ function wpshortlist_set_config() {
 					'query_var'     => "method-{$term}",
 					'meta_box_type' => 'checkbox_list',
 					'input_type'    => 'radio',
+					'relation'      => 'OR',
 
 					'options'       => array(
 						'automatic' => 'automatic',
@@ -150,6 +154,8 @@ function wpshortlist_set_config() {
 					'query_var'     => "supports-{$term}",
 					'meta_box_type' => 'checkbox_list',
 					'input_type'    => 'checkbox',
+					'relation'      => 'AND',
+					'relation_desc' => __( 'Tool must support all selected options.', 'wpshortlist' ),
 
 					'options'       => array(
 						'categories'        => 'categories',

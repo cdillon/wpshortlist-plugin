@@ -44,6 +44,7 @@ if ( ! $filter_set ) {
 					<h3 class="wpshortlist-filter-heading">
 						<?php echo esc_html( $filter['name'] ); ?>
 					</h3>
+					<?php wpshortlist_print_explainer( $filter ); ?>
 				</legend>
 				<?php wpshortlist_print_filter_reset( $filter ); ?>
 				<?php wpshortlist_print_filter_list( $filter ); ?>

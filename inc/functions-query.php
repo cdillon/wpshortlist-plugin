@@ -116,17 +116,32 @@ function wpshortlist_alter_query( $query ) {
 		foreach ( $filter_set['filters'] as $filter ) {
 
 			if ( isset( $query->query[ $filter['query_var'] ] ) ) {
-				$meta_query[] = array(
-					'key'     => $filter['query_var'],
-					'value'   => explode( '|', $query->query[ $filter['query_var'] ] ),
-					'compare' => 'IN',
-				);
 
+				$q_values = explode( '|', $query->query[ $filter['query_var'] ] );
+
+				if ( 'AND' === $filter['relation'] ) {
+					// Add a meta query for each option value.
+					foreach ( $q_values as $q_value ) {
+						$meta_query[] = array(
+							'key'     => $filter['query_var'],
+							'value'   => $q_value,
+							'compare' => '=',
+						);
+					}
+				} else {
+					// Add a single query with an array of option values.
+					$meta_query[] = array(
+						'key'     => $filter['query_var'],
+						'value'   => $q_values,
+						'compare' => 'IN',
+					);
+				}
 			}
 		}
 	}
 
-	q2( $meta_query, 'NEW META QUERY', '', 'meta-query.log' );
+	// phpcs:ignore
+	// q2( $meta_query, 'NEW META QUERY', '', 'meta-query.log' );
 	$query->set( 'meta_query', $meta_query );
 }
 

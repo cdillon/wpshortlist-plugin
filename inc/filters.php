@@ -126,3 +126,20 @@ function wpshortlist_print_filter_reset_all() {
 	</div>
 	<?php
 }
+
+/**
+ * Print 'relation' explainer.
+ *
+ * @param  array $filter  A filter.
+ *
+ * @return void
+ */
+function wpshortlist_print_explainer( $filter ) {
+	if ( isset( $filter['relation'] ) && isset( $filter['relation_desc'] ) ) {
+		?>
+		<div class="wpshortlist-explainer">
+			<?php echo esc_html( $filter['relation_desc'] ); ?>
+		</div>
+		<?php
+	}
+}
