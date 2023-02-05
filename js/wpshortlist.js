@@ -25,8 +25,17 @@ document.addEventListener("DOMContentLoaded", function () {
 		let timeoutID = setTimeout(updateAnOutdatedForm, 50);
 	}
 
-	// Ensure the form matches the query string in case user hits
-	// the Back button. **EXPERIMENTAL**
+	/*
+	 * Ensure the form matches the query string. **EXPERIMENTAL**
+	 *
+	 * The browser may not update the form if user hits the Back button.
+	 *
+	 * For example, if current page has 'tags' selected and user clicks back,
+	 * the form will still show 'tags' as selected.
+	 *
+	 * I plan to build a robust breadcrumbs approach that hopefully will be
+	 * used instead, making this a corner case solution.
+	 */
 	function updateAnOutdatedForm() {
 		// Get the query string data.
 		const urlParams = new URLSearchParams(location.search);
@@ -97,21 +106,37 @@ document.addEventListener("DOMContentLoaded", function () {
 		wpshortlistForm.dispatchEvent(formChange);
 	}
 
-	// Let's go!
+	// Reset all filters.
+	function resetForm(event) {
+		event.preventDefault();
 
-	// Listen for changes.
-	wpshortlistForm.addEventListener('change', formChangeHandler, false);
+		// Simply return to base URL.
+		const currentUrl = new URL(window.location.href);
+		location.assign(`${currentUrl.origin}${currentUrl.pathname}`);
+	}
 
-	wpshortlistForm.querySelectorAll('a.reset-filter-link')
+	// Initialize.
+	function init() {
+		// Listen for changes on the form.
+		wpshortlistForm.addEventListener('change', formChangeHandler, false);
+
+		// Listen for clicks to reset individual filters.
+		wpshortlistForm.querySelectorAll('a.wpshortlist-reset-filter-link')
 		.forEach((el) => {
 			el.addEventListener('click', resetFilter, false);
 		});
 
+		// Listen for clicks to reset all filters.
+		wpshortlistForm.querySelectorAll('a.wpshortlist-reset-form-link')
+		.forEach((el) => {
+			el.addEventListener('click', resetForm, false);
+		});
+	}
+
+	// Let's go!
+	init();
 
 	// Initiate the Back-button hack.
-	// The browser may not update the form upon going back.
-	// For example, if current page has 'tags' selected and user clicks back, the form will still show 'tags' as selected.
-	// I plan to build a robust breadcrumbs approach that hopefully users will use instead.
 	delayTimer();
 
 });

@@ -31,8 +31,10 @@ $filter_set = wpshortlist_get_filter_set();
 if ( ! $filter_set ) {
 	return;
 }
+
 ?>
 <form id="wpshortlist-form" class="wpshortlist-form">
+	<?php wpshortlist_print_filter_reset_all(); ?>
 	<div class="wpshortlist-filterset">
 		<?php foreach ( $filter_set['filters'] as $filter ) : ?>
 

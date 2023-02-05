@@ -103,10 +103,25 @@ function wpshortlist_filter_list_item( $args ) {
 function wpshortlist_print_filter_reset( $filter ) {
 	?>
 	<div>
-		<a class="reset-filter-link"
+		<a class="wpshortlist-reset-filter-link"
 			href="#"
 			data-filter_name = "<?php echo esc_attr( $filter['query_var'] ); ?>">
 			<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
+		</a>
+	</div>
+	<?php
+}
+
+/**
+ * Print a reset link for the entire form.
+ *
+ * @return void
+ */
+function wpshortlist_print_filter_reset_all() {
+	?>
+	<div>
+		<a class="wpshortlist-reset-form-link" href="#">
+			<?php esc_html_e( 'reset all', 'wpshortlist' ); ?>
 		</a>
 	</div>
 	<?php
