@@ -47,12 +47,51 @@ add_action( 'pre_get_posts', 'wpshortlist_change_sort_order' );
 /**
  * If it's OK to modify or debug stuff like the main query.
  *
- * @todo Make this more robust.
+ * @param WP_Query $query  A WP_Query object.
  *
  * @return boolean
  */
-function wpshortlist_ok_modify() {
-	return ( is_post_type_archive( array( 'tool' ) ) || is_tax( array( 'wp_feature' ) ) );
+function wpshortlist_ok_modify( $query ) {
+
+	if ( ! is_a( $query, 'WP_Query' ) ) {
+		return false;
+	}
+
+	if ( is_admin() && ! is_main_query() ) {
+		return false;
+	}
+
+	if ( isset( $query->query['favicon'] ) ) {
+		return false;
+	}
+
+	if ( isset( $query->query['post_type'] ) ) {
+		return 'tool' === $query->query['post_type'];
+	}
+
+	// All that just to narrow it down to our Tool/Feature query. Why?
+
+	// Assemble a list of our public custom taxonomies.
+	$tax_query_vars = array();
+	$taxonomies     = get_object_taxonomies( 'tool', 'objects' );
+	foreach ( $taxonomies as $tax_object ) {
+		if ( $tax_object->public ) {
+			if ( is_bool( $tax_object->query_var ) ) {
+				$tax_query_vars[] = $tax_object->name;
+			} else {
+				$tax_query_vars[] = $tax_object->query_var;
+			}
+		}
+	}
+
+	// Is queried taxonomy one of our custom taxonomies?
+	// This is necessary because the post type is not present in $wp_query
+	// on a taxonomy archive. Why?
+	if ( array_intersect( $tax_query_vars, array_keys( $query->query ) ) ) {
+		return true;
+	}
+
+	return false;
 }
 
 /**
@@ -63,10 +102,7 @@ function wpshortlist_ok_modify() {
  * @todo Handle CPT and other CT.
  */
 function wpshortlist_alter_query( $query ) {
-	if ( ! wpshortlist_ok_modify() ) {
-		return;
-	}
-	if ( ! in_array( 'feature', array_keys( $query->query ), true ) ) {
+	if ( ! wpshortlist_ok_modify( $query ) ) {
 		return;
 	}
 
@@ -90,6 +126,7 @@ function wpshortlist_alter_query( $query ) {
 		}
 	}
 
+	q2( $meta_query, 'NEW META QUERY', '', 'meta-query.log' );
 	$query->set( 'meta_query', $meta_query );
 }
 
