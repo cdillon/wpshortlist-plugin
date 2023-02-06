@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	function resetFilter(event) {
 		event.preventDefault();
 
-		// Uncheck this filter's inputs.
+		// Uncheck all inputs for this filter.
 		let name = event.target.dataset.filter_name;
 		document.getElementsByName(`${name}`).forEach((input) => {
 			input.checked = false;
@@ -115,22 +115,64 @@ document.addEventListener("DOMContentLoaded", function () {
 		location.assign(`${currentUrl.origin}${currentUrl.pathname}`);
 	}
 
+	// Check all checkboxes in a filter.
+	function checkAll(event) {
+		event.preventDefault();
+
+		// Check all inputs for this filter.
+		let name = event.target.dataset.filter_name;
+		document.getElementsByName(`${name}`).forEach((input) => {
+			input.checked = true;
+		});
+
+		// Trigger the change event.
+		const formChange = new Event('change');
+		wpshortlistForm.dispatchEvent(formChange);
+	}
+
+	// Toggle "check all" links.
+	function updateCheckAll() {
+		wpshortlistForm.querySelectorAll('a.wpshortlist-filter-check-all-link')
+			.forEach((el) => {
+				let name = el.dataset.filter_name;
+				let action = el.closest('.wpshortlist-filter-dependent-action');
+				if (isAllChecked(name)) {
+					action.style.display = 'none';
+				} else {
+					action.style.display = 'block';
+				}
+			});
+	}
+
+	// Determine if all checkboxes are checked for a single filter.
+	function isAllChecked(name) {
+		let numInputs = wpshortlistForm.querySelectorAll(`input[name=${name}]`).length;
+		let numChecked = wpshortlistForm.querySelectorAll(`input[name=${name}]:checked`).length;
+		return numInputs === numChecked;
+	}
+
 	// Initialize.
 	function init() {
 		// Listen for changes on the form.
 		wpshortlistForm.addEventListener('change', formChangeHandler, false);
 
-		// Listen for clicks to reset individual filters.
+		// Listen for clicks to reset a filter.
 		wpshortlistForm.querySelectorAll('a.wpshortlist-reset-filter-link')
-		.forEach((el) => {
-			el.addEventListener('click', resetFilter, false);
-		});
+			.forEach((el) => {
+				el.addEventListener('click', resetFilter, false);
+			});
+
+		// Listen for clicks to select all checkboxes.
+		wpshortlistForm.querySelectorAll('a.wpshortlist-filter-check-all-link')
+			.forEach((el) => {
+				el.addEventListener('click', checkAll, false);
+			});
 
 		// Listen for clicks to reset all filters.
 		wpshortlistForm.querySelectorAll('a.wpshortlist-reset-form-link')
-		.forEach((el) => {
-			el.addEventListener('click', resetForm, false);
-		});
+			.forEach((el) => {
+				el.addEventListener('click', resetForm, false);
+			});
 	}
 
 	// Let's go!
@@ -139,4 +181,5 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Initiate the Back-button hack.
 	delayTimer();
 
+	updateCheckAll();
 });

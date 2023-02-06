@@ -95,6 +95,45 @@ function wpshortlist_filter_list_item( $args ) {
 }
 
 /**
+ * Print filter actions.
+ *
+ * @param  array $filter  A filter.
+ *
+ * @return void
+ */
+function wpshortlist_print_filter_actions( $filter ) {
+	// [reset] link.
+	wpshortlist_print_filter_reset( $filter );
+
+	// [check all] link for checkboxes.
+	if ( 'checkbox' === $filter['input_type'] ) {
+		wpshortlist_print_filter_check_all( $filter );
+	}
+}
+
+/**
+ * Print "check all" link.
+ *
+ * @param  array $filter  A filter.
+ *
+ * @return void
+ */
+function wpshortlist_print_filter_check_all( $filter ) {
+	?>
+	<div>
+		<span class="wpshortlist-filter-dependent-action">
+			<a class="wpshortlist-filter-check-all-link"
+				href="#"
+				title="select every option"
+				data-filter_name="<?php echo esc_attr( $filter['query_var'] ); ?>">
+				<?php esc_html_e( 'check all', 'wpshortlist' ); ?>
+			</a>
+		</span>
+	</div>
+	<?php
+}
+
+/**
  * Print a reset link for a single filter.
  *
  * @param  array $filter  A filter.
@@ -107,7 +146,7 @@ function wpshortlist_print_filter_reset( $filter ) {
 		<a class="wpshortlist-reset-filter-link"
 			href="#"
 			title="reset this filter"
-			data-filter_name = "<?php echo esc_attr( $filter['query_var'] ); ?>">
+			data-filter_name="<?php echo esc_attr( $filter['query_var'] ); ?>">
 			<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
 		</a>
 	</div>

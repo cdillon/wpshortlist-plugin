@@ -46,7 +46,9 @@ if ( ! $filter_set ) {
 					</h3>
 					<?php wpshortlist_print_explainer( $filter ); ?>
 				</legend>
-				<?php wpshortlist_print_filter_reset( $filter ); ?>
+				<div class="wpshortlist-filter-actions">
+					<?php wpshortlist_print_filter_actions( $filter ); ?>
+				</div>
 				<?php wpshortlist_print_filter_list( $filter ); ?>
 			</fieldset>
 		</div><!-- .wpshortlist-filter -->
