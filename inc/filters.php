@@ -49,7 +49,8 @@ function wpshortlist_print_filter_list( $filter ) {
 		// Build a unique ID like 'supports-display-term-list-tags'.
 		$input_id = $filter['query_var'] . '-' . $option_id;
 
-		$checked = get_query_var( $filter['query_var'] === $option_id );
+		$q_value = get_query_var( $filter['query_var'] );
+		$checked = in_array( $option_id, explode( '|', $q_value ), true );
 
 		$args = array(
 			'type'    => $filter['input_type'],
