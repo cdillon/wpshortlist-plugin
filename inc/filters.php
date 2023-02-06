@@ -105,6 +105,7 @@ function wpshortlist_print_filter_reset( $filter ) {
 	<div>
 		<a class="wpshortlist-reset-filter-link"
 			href="#"
+			title="reset this filter"
 			data-filter_name = "<?php echo esc_attr( $filter['query_var'] ); ?>">
 			<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
 		</a>
