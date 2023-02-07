@@ -65,6 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Action router.
 	function formClickHandler(event) {
+		showOverlay();
+
 		const action = event.target.dataset.action;
 		switch (action) {
 
@@ -188,6 +190,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	function triggerChange() {
 		const formChange = new Event('change');
 		wpshortlistForm.dispatchEvent(formChange);
+	}
+
+	// Insert an overlay.
+	function showOverlay() {
+		const overlay = document.createElement('div');
+		overlay.id = 'wpshortlist-overlay';
+		document.body.append(overlay);
 	}
 
 	// Initialize listeners.
