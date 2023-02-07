@@ -102,55 +102,51 @@ function wpshortlist_filter_list_item( $args ) {
  * @return void
  */
 function wpshortlist_print_filter_actions( $filter ) {
-	// [reset] link.
+	// [RESET] link.
 	wpshortlist_print_filter_reset( $filter );
 
-	// [check all] link for checkboxes.
+	// [CHECK ALL] link for checkboxes.
 	if ( 'checkbox' === $filter['input_type'] ) {
-		wpshortlist_print_filter_check_all( $filter );
+		wpshortlist_print_filter_check_all();
 	}
-}
-
-/**
- * Print "check all" link.
- *
- * @param  array $filter  A filter.
- *
- * @return void
- */
-function wpshortlist_print_filter_check_all( $filter ) {
-	?>
-	<div>
-		<span class="wpshortlist-filter-dependent-action">
-			<a class="wpshortlist-filter-check-all-link"
-				href="#"
-				title="select every option"
-				data-action="check-all"
-				data-filter_name="<?php echo esc_attr( $filter['query_var'] ); ?>">
-				<?php esc_html_e( 'check all', 'wpshortlist' ); ?>
-			</a>
-		</span>
-	</div>
-	<?php
 }
 
 /**
  * Print a reset link for a single filter.
  *
- * @param  array $filter  A filter.
+ * @return void
+ */
+function wpshortlist_print_filter_reset() {
+	?>
+	<div class="filter-action action-reset">
+		<div class="action-enabled" style="display: none;">
+			<a href="#" title="reset this filter" data-action="reset">
+				<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
+			</a>
+		</div>
+		<div class="action-disabled" style="display: none;">
+			<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Print "check all" link.
  *
  * @return void
  */
-function wpshortlist_print_filter_reset( $filter ) {
+function wpshortlist_print_filter_check_all() {
 	?>
-	<div>
-		<a class="wpshortlist-reset-filter-link"
-			href="#"
-			title="reset this filter"
-			data-action="reset"
-			data-filter_name="<?php echo esc_attr( $filter['query_var'] ); ?>">
-			<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
-		</a>
+	<div class="filter-action action-check-all">
+		<div class="action-enabled" style="display: none;">
+			<a href="#" title="select every option" data-action="check-all">
+				<?php esc_html_e( 'check all', 'wpshortlist' ); ?>
+			</a>
+		</div>
+		<div class="action-disabled" style="display: none;">
+			<?php esc_html_e( 'check all', 'wpshortlist' ); ?>
+		</div>
 	</div>
 	<?php
 }

@@ -38,7 +38,9 @@ if ( ! $filter_set ) {
 	<div class="wpshortlist-filterset">
 		<?php foreach ( $filter_set['filters'] as $filter ) : ?>
 
-		<div class="wpshortlist-filter">
+		<div class="wpshortlist-filter"
+				data-filter_name="<?php echo esc_attr( $filter['query_var'] ); ?>"
+				data-filter_type="<?php echo esc_attr( $filter['input_type'] ); ?>">
 			<fieldset>
 				<legend>
 					<h3 class="wpshortlist-filter-heading">
@@ -46,7 +48,7 @@ if ( ! $filter_set ) {
 					</h3>
 					<?php wpshortlist_print_explainer( $filter ); ?>
 				</legend>
-				<div class="wpshortlist-filter-actions">
+				<div class="filter-actions">
 					<?php wpshortlist_print_filter_actions( $filter ); ?>
 				</div>
 				<?php wpshortlist_print_filter_list( $filter ); ?>
