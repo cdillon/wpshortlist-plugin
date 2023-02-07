@@ -125,6 +125,7 @@ function wpshortlist_print_filter_check_all( $filter ) {
 			<a class="wpshortlist-filter-check-all-link"
 				href="#"
 				title="select every option"
+				data-action="check-all"
 				data-filter_name="<?php echo esc_attr( $filter['query_var'] ); ?>">
 				<?php esc_html_e( 'check all', 'wpshortlist' ); ?>
 			</a>
@@ -146,6 +147,7 @@ function wpshortlist_print_filter_reset( $filter ) {
 		<a class="wpshortlist-reset-filter-link"
 			href="#"
 			title="reset this filter"
+			data-action="reset"
 			data-filter_name="<?php echo esc_attr( $filter['query_var'] ); ?>">
 			<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
 		</a>
@@ -161,7 +163,10 @@ function wpshortlist_print_filter_reset( $filter ) {
 function wpshortlist_print_filter_reset_all() {
 	?>
 	<div>
-		<a class="wpshortlist-reset-form-link" href="#">
+		<a class="wpshortlist-reset-form-link"
+			href="#"
+			title="reset all filters"
+			data-action="reset-form">
 			<?php esc_html_e( 'reset all', 'wpshortlist' ); ?>
 		</a>
 	</div>

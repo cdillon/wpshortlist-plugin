@@ -10,6 +10,10 @@ document.addEventListener("DOMContentLoaded", function () {
 		return false;
 	}
 
+	// ---------
+	// Utilities
+	// ---------
+
 	// Serialize the form data.
 	function serializeForm(form) {
 		let obj = {};
@@ -19,11 +23,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 		return obj;
 	};
-
-	// Set a timer for the Back-button hack.
-	function delayTimer() {
-		let timeoutID = setTimeout(updateAnOutdatedForm, 50);
-	}
 
 	/*
 	 * Ensure the form matches the query string. **EXPERIMENTAL**
@@ -55,6 +54,40 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
+	// Set a timer for the Back-button hack.
+	function delayTimer() {
+		setTimeout(updateAnOutdatedForm, 50);
+	}
+
+	// --------------
+	// Event Handlers
+	// --------------
+
+	// Action router.
+	function formClickHandler(event) {
+		const action = event.target.dataset.action;
+		switch (action) {
+
+			// form reset
+			case 'reset-form':
+				resetForm(event);
+				break;
+
+			// filter reset
+			case 'reset':
+				resetFilter(event);
+				break;
+
+			// check all
+			case 'check-all':
+				checkAll(event);
+				break;
+
+			default:
+				// let it bubble up to the form change listener
+		}
+	}
+
 	// Submit the form via Ajax and redirect.
 	function formChangeHandler(event) {
 		event.preventDefault();
@@ -69,12 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 
 		let formData = serializeForm(wpshortlistForm);
-		if (FormData) {
+		if (formData) {
 			allData.formData = formData;
 		}
 
-		// Why are we still using jQuery in WordPress in 2023?!
 		// Using .post because I cannot get .ajax to work.
+		// @todo Convert to pure XHR.
 		jQuery.post(
 			wpshortlistSettings.ajaxUrl,
 			allData,
@@ -85,11 +118,15 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 			},
 		)
-			.done(function (msg) { console.log(msg) })
+			// .done(function (msg) { console.log(msg) })
 			.fail(function (xhr, status, error) {
 				// error handling
 			});
 	}
+
+	// ------------
+	// Form Actions
+	// ------------
 
 	// Reset a single filter.
 	function resetFilter(event) {
@@ -101,9 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			input.checked = false;
 		});
 
-		// Trigger the change event.
-		const formChange = new Event('change');
-		wpshortlistForm.dispatchEvent(formChange);
+		triggerChange();
 	}
 
 	// Reset all filters.
@@ -125,9 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			input.checked = true;
 		});
 
-		// Trigger the change event.
-		const formChange = new Event('change');
-		wpshortlistForm.dispatchEvent(formChange);
+		triggerChange();
 	}
 
 	// Toggle "check all" links.
@@ -151,35 +184,26 @@ document.addEventListener("DOMContentLoaded", function () {
 		return numInputs === numChecked;
 	}
 
-	// Initialize.
-	function init() {
-		// Listen for changes on the form.
-		wpshortlistForm.addEventListener('change', formChangeHandler, false);
-
-		// Listen for clicks to reset a filter.
-		wpshortlistForm.querySelectorAll('a.wpshortlist-reset-filter-link')
-			.forEach((el) => {
-				el.addEventListener('click', resetFilter, false);
-			});
-
-		// Listen for clicks to select all checkboxes.
-		wpshortlistForm.querySelectorAll('a.wpshortlist-filter-check-all-link')
-			.forEach((el) => {
-				el.addEventListener('click', checkAll, false);
-			});
-
-		// Listen for clicks to reset all filters.
-		wpshortlistForm.querySelectorAll('a.wpshortlist-reset-form-link')
-			.forEach((el) => {
-				el.addEventListener('click', resetForm, false);
-			});
+	// Trigger the change event.
+	function triggerChange() {
+		const formChange = new Event('change');
+		wpshortlistForm.dispatchEvent(formChange);
 	}
 
+	// Initialize listeners.
+	function init() {
+		wpshortlistForm.addEventListener('click', formClickHandler, false);
+		wpshortlistForm.addEventListener('change', formChangeHandler, false);
+	}
+
+	// ---------
 	// Let's go!
+	// ---------
+
 	init();
 
-	// Initiate the Back-button hack.
 	delayTimer();
 
 	updateCheckAll();
+
 });
