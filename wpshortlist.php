@@ -65,6 +65,8 @@ function wpshortlist_enqueue_scripts() {
 		return;
 	}
 
+	wp_enqueue_style( 'wpshortlist', plugins_url( '/css/style.css', __FILE__ ), array(), '1.0', 'all' );
+
 	// @todo Get actual script version number.
 	wp_enqueue_script( 'wpshortlist', plugins_url( '/js/wpshortlist.js', __FILE__ ), array( 'jquery' ), '1.0', true );
 

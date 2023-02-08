@@ -1,0 +1,101 @@
+/*
+WP Shortlist Plugin
+*/
+
+/*
+Filters
+-------------------------------------------------------------- */
+
+#wpshortlist-overlay {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.1);
+	z-index: 9;
+}
+
+/*
+filters widget
+----------------- */
+
+/*
+filter list
+*/
+
+.widget-area ul.wpshortlist-filter-list {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0.2em;
+}
+
+.wpshortlist-filter fieldset {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+.wpshortlist-explainer {
+	font-weight: 400;
+	font-style: italic;
+}
+
+.wpshortlist-filter-list-item label {
+	padding-left: 0.3em;
+}
+
+/*
+form actions
+*/
+
+.form-actions {
+	display: flex;
+	font-style: italic;
+}
+
+.filter-actions {
+	display: flex;
+	font-size: 0.9em;
+	font-style: italic;
+	margin-bottom: 3px;
+}
+
+/*
+Most filters will have actions so let's prevent FOUC when links are enabled.
+This trick sets the height based on other properties, instead of setting a
+static height.
+*/
+.form-actions:before,
+.filter-actions:before {
+	content: "|";
+	visibility: hidden;
+}
+
+.widget-area .form-actions a:hover,
+.widget-area .filter-actions a:hover {
+	text-decoration: none;
+}
+
+.filter-action > div {
+	display: inline-block;
+}
+
+.action-disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.filter-action:not(:first-child):before {
+	content: "\2022";
+	/* color: #032075; */
+	opacity: 0.3;
+	/* Right side already has 0.25em due to HTML line break. */
+	padding: 0 0.25em 0 0.5em;
+}
+
+.filter-action a {
+	text-decoration: none;
+}
