@@ -141,6 +141,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Toggle action links.
 	function updateActions() {
+		wpshortlistForm.querySelectorAll('.form-actions')
+			.forEach((el) => {
+				toggleResetAll(el);
+			});
+
 		wpshortlistForm.querySelectorAll('.wpshortlist-filter')
 			.forEach((el) => {
 				toggleReset(el);
@@ -176,6 +181,15 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 
+	// Toggle the form's reset link.
+	function toggleResetAll(el) {
+		if (isAnyCheckedOnForm()) {
+			showAction(el.querySelector('.action-reset .action-enabled'));
+		} else {
+			showAction(el.querySelector('.action-reset .action-disabled'));
+		}
+	}
+
 	// Toggle the check-all link in a single filter.
 	function toggleCheckAll(el) {
 		const name = el.dataset.filter_name;
@@ -202,9 +216,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		return n === i;
 	}
 
-	// Determine if any checkboxes are checked for a single filter.
+	// Return the number of checked inputs for a single filter.
 	function isAnyChecked(name) {
 		return wpshortlistForm.querySelectorAll(`input[name=${name}]:checked`).length;
+	}
+
+	// Return the number of checked inputs on the entire form.
+	function isAnyCheckedOnForm() {
+		return wpshortlistForm.querySelectorAll('input:checked').length;
 	}
 
 	// Trigger the change event.

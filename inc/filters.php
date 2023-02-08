@@ -158,13 +158,15 @@ function wpshortlist_print_filter_check_all() {
  */
 function wpshortlist_print_filter_reset_all() {
 	?>
-	<div>
-		<a class="wpshortlist-reset-form-link"
-			href="#"
-			title="reset all filters"
-			data-action="reset-form">
+	<div class="form-action action-reset">
+		<div class="action-enabled" style="display: none;">
+			<a href="#" title="reset all filters" data-action="reset-form">
+				<?php esc_html_e( 'reset all', 'wpshortlist' ); ?>
+			</a>
+		</div>
+		<div class="action-disabled" style="display: none;">
 			<?php esc_html_e( 'reset all', 'wpshortlist' ); ?>
-		</a>
+		</div>
 	</div>
 	<?php
 }
