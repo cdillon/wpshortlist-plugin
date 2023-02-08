@@ -86,8 +86,9 @@ document.addEventListener("DOMContentLoaded", function () {
 				break;
 
 			default:
-				// let it bubble up to the form change listener
+				hideOverlay();
 		}
+
 	}
 
 	// Submit the form via Ajax and redirect.
@@ -237,6 +238,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		const overlay = document.createElement('div');
 		overlay.id = 'wpshortlist-overlay';
 		document.body.append(overlay);
+	}
+
+	// Remove the overlay.
+	function hideOverlay() {
+		document.getElementById('wpshortlist-overlay').remove();
 	}
 
 	// Initialize listeners.
