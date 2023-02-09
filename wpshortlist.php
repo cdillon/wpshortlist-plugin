@@ -31,7 +31,7 @@ require_once WPSHORTLIST_INC_DIR . 'taxonomies.php';
 require_once WPSHORTLIST_INC_DIR . 'filters.php';
 require_once WPSHORTLIST_INC_DIR . 'filters-config.php';
 require_once WPSHORTLIST_INC_DIR . 'filters-templates.php';
-require_once WPSHORTLIST_INC_DIR . 'class-wpshortlist-widget.php';
+require_once WPSHORTLIST_INC_DIR . 'class-wpshortlist-filters-widget.php';
 
 /**
  * On plugin activation.
@@ -80,3 +80,12 @@ function wpshortlist_enqueue_scripts() {
 }
 
 add_action( 'wp_enqueue_scripts', 'wpshortlist_enqueue_scripts' );
+
+/**
+ * Register and load widgets.
+ */
+function wpshortlist_load_widgets() {
+	register_widget( 'wpshortlist_filters_widget' );
+}
+
+add_action( 'widgets_init', 'wpshortlist_load_widgets' );
