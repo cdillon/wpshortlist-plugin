@@ -9,12 +9,10 @@
  * Print our filters. Called by widget.
  */
 function wpshortlist_filters() {
-
-	// Get current URL without args (the CPT/CT permalink only).
-	$current_url = wpshortlist_get_current_url();
-
-	// Filter sets.
-	$config = wpshortlist_get_config();
+	$filter_set = wpshortlist_get_filter_set();
+	if ( ! $filter_set ) {
+		return;
+	}
 
 	$template       = wpshortlist_get_current_filter_template();
 	$template_found = get_template_part( 'template-parts/wpshortlist/' . $template );

@@ -26,12 +26,6 @@ HTML Structure:
 	</div><!-- .wpshortlist-filterset -->
 </form>
 */
-
-$filter_set = wpshortlist_get_filter_set();
-if ( ! $filter_set ) {
-	return;
-}
-
 ?>
 <form id="wpshortlist-form" class="wpshortlist-form">
 	<div class="form-actions">
