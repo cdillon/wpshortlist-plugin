@@ -1,9 +1,13 @@
 <?php
 /**
  * Plugin Functions
+ *
+ * @package wpshortlist
  */
 
-// helper function to get all post meta values for a specific key
+/**
+ * Get all post meta values for a specific key.
+ */
 function wpshortlist_get_all_post_meta() {
 	global $wpdb;
 
@@ -16,7 +20,7 @@ function wpshortlist_get_all_post_meta() {
 	}
 
 	$results = $wpdb->get_results( $sql, ARRAY_A );
-	
+
 	foreach ( $results as $result ) {
 		$meta_values[] = $result['meta_value'];
 	}
@@ -27,9 +31,12 @@ function wpshortlist_get_all_post_meta() {
 
 /**
  * Use default featured image if Tool has no image.
+ *
+ * @param int     $thumbnail_id  Thumbnail ID.
+ * @param WP_Post $post          A post.
  */
 function wpshortlist_post_thumbnail_id( $thumbnail_id, $post ) {
-	if ( 0 === $thumbnail_id && 'tool' == $post->post_type ) {
+	if ( 0 === $thumbnail_id && 'tool' === $post->post_type ) {
 		return 233;
 	}
 
@@ -38,7 +45,6 @@ function wpshortlist_post_thumbnail_id( $thumbnail_id, $post ) {
 
 add_filter( 'post_thumbnail_id', 'wpshortlist_post_thumbnail_id', 10, 2 );
 
-
 /**
  * Return the current query type and values.
  *
@@ -46,6 +52,8 @@ add_filter( 'post_thumbnail_id', 'wpshortlist_post_thumbnail_id', 10, 2 );
  */
 function wpshortlist_get_current_query_type() {
 	$qo = get_queried_object();
+
+	// How to identify proxy archive?
 
 	if ( is_post_type_archive() ) {
 		return array(
