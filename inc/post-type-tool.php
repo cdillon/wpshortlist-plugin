@@ -54,13 +54,13 @@ function wpshortlist_register_post_type__tool() {
 		'show_in_nav_menus' => true,
 		/*
 		 * then inherited from $show_ui:
-		 */ 
+		 */
 		'show_in_menu' => true,
 		/*
 		 * then inherited from $show_in_menu:
 		 */
 		'show_in_admin_bar' => true,
-		
+
 		'exclude_from_search' => false,   // opposite of $public
 
 		'hierarchical' => false,
@@ -68,7 +68,7 @@ function wpshortlist_register_post_type__tool() {
 		'has_archive' => true,
 		'rewrite' => [ 'slug' => 'tools', 'with_front' => true ],   // usually plural
 		'query_var' => true,
-		
+
 		/*
 		 * Don't comment out in case something enables the classic editor.
 		 */
@@ -76,7 +76,7 @@ function wpshortlist_register_post_type__tool() {
 		'rest_base' => '',
 		'rest_controller_class' => 'WP_REST_Posts_Controller',
 		'rest_namespace' => 'wp/v2',
-		
+
 		'menu_position' => null,
 		'menu_icon' => null,   // then 'dashicons-admin-post'
 		'capability_type' => 'post',
@@ -89,24 +89,24 @@ function wpshortlist_register_post_type__tool() {
 		 * Each item should be an array containing block name and optional attributes.
 		 */
 		'template' => [],
-		
+
 		/*
-		 * Core feature(s) the post type supports. Serves as an alias for calling add_post_type_support() directly. 
-		 * 
-		 * Core features include 'title', 'editor', 'comments', 'revisions', 'trackbacks', 'author', 'excerpt', 
+		 * Core feature(s) the post type supports. Serves as an alias for calling add_post_type_support() directly.
+		 *
+		 * Core features include 'title', 'editor', 'comments', 'revisions', 'trackbacks', 'author', 'excerpt',
 		 * 'page-attributes', 'thumbnail', 'custom-fields', and 'post-formats'.
-		 * 
-		 * Additionally, the 'revisions' feature dictates whether the post type will store revisions, 
+		 *
+		 * Additionally, the 'revisions' feature dictates whether the post type will store revisions,
 		 * and the 'comments' feature dictates whether the comments count will show on the edit screen.
-		 * 
+		 *
 		 * A feature can also be specified as an array of arguments to provide additional information about supporting that feature.
 		 * Example: array( 'my_feature', array( 'field' => 'value' ) ).
-		 * 
+		 *
 		 * Default is an array containing 'title' and 'editor'.
 		 */
 		'supports' => [ 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes' ],
-		
-		'taxonomies' => [ 'wp_category' ],
+
+		'taxonomies' => [],
 	];
 
 	// key must not exceed 20 characters

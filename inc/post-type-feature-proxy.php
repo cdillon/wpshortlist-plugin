@@ -53,7 +53,7 @@ function wpshortlist_register_post_type__feature_proxy() {
 		'show_in_nav_menus' => true,
 		/*
 		 * then inherited from $show_ui:
-		 */ 
+		 */
 		'show_in_menu' => true,
 		/*
 		 * then inherited from $show_in_menu:
@@ -61,7 +61,7 @@ function wpshortlist_register_post_type__feature_proxy() {
 		'show_in_admin_bar' => false,
 
 		'exclude_from_search' => false,
-		
+
 		'hierarchical' => false,
 
 		/*
@@ -87,7 +87,7 @@ function wpshortlist_register_post_type__feature_proxy() {
 
 		'template' => [],
 		'supports' => [ 'title', 'editor', 'thumbnail' ],
-		'taxonomies' => [],
+		'taxonomies' => [ 'feature_category' ],
 
 		/*
 		 * 3rd party

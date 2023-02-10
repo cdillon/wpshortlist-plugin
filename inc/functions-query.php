@@ -34,7 +34,7 @@ add_filter( 'query_vars', 'wpshortlist_register_query_vars' );
 function wpshortlist_change_sort_order( $query ) {
 	// Both admin and front end, regardless if main query.
 	$post_types = array( 'tool', 'category_proxy', 'feature_proxy' );
-	$taxonomies = array( 'wp_feature', 'wp_category', 'tool_type' );
+	$taxonomies = array( 'wp_feature', 'feature_category', 'tool_type' );
 
 	if ( is_post_type_archive( $post_types ) || is_tax( $taxonomies ) ) {
 		$query->set( 'orderby', 'title' );
