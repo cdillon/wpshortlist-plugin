@@ -1,6 +1,12 @@
 <?php
 /**
  * Load our taxonomies.
+ *
+ * @package wpshortlist
+ */
+
+/*
+ * Load files.
  */
 require_once plugin_dir_path( __FILE__ ) . 'taxonomy-feature-category.php';
 require_once plugin_dir_path( __FILE__ ) . 'taxonomy-tool-type.php';

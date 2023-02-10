@@ -1,5 +1,13 @@
 <?php
+/**
+ * Post Types
+ *
+ * @package wpshortlist
+ */
 
+/**
+ * Load files.
+ */
 require_once plugin_dir_path( __FILE__ ) . 'post-type-tool.php';
 require_once plugin_dir_path( __FILE__ ) . 'post-type-feature-proxy.php';
 require_once plugin_dir_path( __FILE__ ) . 'post-type-category-proxy.php';
