@@ -101,7 +101,15 @@ function wpshortlist_ajax_handler() {
 
 	// Assemble the query vars.
 	$new_args   = array();
-	$filter_set = wpshortlist_get_filter_set( $current_taxonomy, $current_term );
+	$params     = array(
+		'type' => 'tax_archive',
+		'tax'  => $current_taxonomy,
+		'term' => $current_term,
+	);
+	$filter_set = wpshortlist_get_filter_set( $params );
+	if ( ! $filter_set ) {
+		wp_send_json_error( 'filter not found' );
+	}
 
 	foreach ( $filter_set['filters'] as $filter ) {
 		// Each filter has options. Get those option names.

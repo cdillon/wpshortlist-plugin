@@ -9,7 +9,7 @@
  * Print our filters. Called by widget.
  */
 function wpshortlist_filters() {
-	$filter_set = wpshortlist_get_filter_set();
+	$filter_set = wpshortlist_get_current_filter_set();
 	if ( ! $filter_set ) {
 		return;
 	}
