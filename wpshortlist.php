@@ -30,6 +30,7 @@ require_once WPSHORTLIST_INC_DIR . 'post-types.php';
 require_once WPSHORTLIST_INC_DIR . 'taxonomies.php';
 require_once WPSHORTLIST_INC_DIR . 'filters.php';
 require_once WPSHORTLIST_INC_DIR . 'filters-config.php';
+require_once WPSHORTLIST_INC_DIR . 'filters-functions.php';
 require_once WPSHORTLIST_INC_DIR . 'filters-templates.php';
 require_once WPSHORTLIST_INC_DIR . 'class-wpshortlist-filters-widget.php';
 
