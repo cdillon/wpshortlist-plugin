@@ -34,10 +34,7 @@ class WPShortlist_Filters_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
-		// @todo build: replace with `if_has_filters`
-		if ( ! is_tax( 'wp_feature' ) ) {
-			return;
-		}
+		// @todo Make conditional. Check if current query has filters.
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 

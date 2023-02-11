@@ -1,0 +1,38 @@
+{
+	"name": "Display Term List",
+	"term": "display-term-list",
+	"taxonomy": "wp_feature",
+	"taxonomy_title": "Feature",
+	"post_types": [
+		"tool"
+	],
+	"filters": [
+		{
+			"name": "How",
+			"id": "method",
+			"query_var": "method-display-term-list",
+			"meta_box_type": "checkbox_list",
+			"input_type": "radio",
+			"relation": "OR",
+			"options": {
+				"block": "block",
+				"widget": "widget",
+				"shortcode": "shortcode"
+			}
+		},
+		{
+			"name": "For",
+			"id": "supports",
+			"query_var": "supports-display-term-list",
+			"meta_box_type": "checkbox_list",
+			"input_type": "checkbox",
+			"relation": "AND",
+			"relation_desc": "Tool must support all selected options.",
+			"options": {
+				"categories": "categories",
+				"tags": "tags",
+				"custom-taxonomies": "custom taxonomies"
+			}
+		}
+	]
+}

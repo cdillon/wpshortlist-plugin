@@ -11,23 +11,20 @@
  * @param array $meta_boxes Meta boxes.
  */
 function wpshortlist_meta_boxes( $meta_boxes ) {
-
-	if ( ! function_exists( 'wpshortlist_get_config' ) ) {
+	if ( ! is_admin() ) {
 		return $meta_boxes;
 	}
 
-	$config = wpshortlist_get_config();
+	// Get list of filter set names.
+	$names = get_option( 'wpshortlist_filter_set_names', array() );
+	if ( ! $names ) {
+		return $meta_boxes;
+	}
 
-	foreach ( $config as $filter_set ) {
-		// @todo Check filter type here.
+	foreach ( $names as $name ) {
+		$filter_set = get_option( $name );
 
-		$meta_box = array();
-		$fields   = array();
-
-		$meta_box['id']         = $filter_set['term'];
-		$meta_box['title']      = $filter_set['taxonomy_title'] . ': ' . $filter_set['name'];
-		$meta_box['post_types'] = $filter_set['post_types'];
-
+		$fields = array();
 		foreach ( $filter_set['filters'] as $filter ) {
 			$fields[] = array(
 				'name'    => $filter['name'],
@@ -37,8 +34,12 @@ function wpshortlist_meta_boxes( $meta_boxes ) {
 			);
 		}
 
-		$meta_box['fields'] = $fields;
-
+		$meta_box     = array(
+			'id'         => $filter_set['term'],
+			'title'      => $filter_set['taxonomy_title'] . ': ' . $filter_set['name'],
+			'post_types' => $filter_set['post_types'],
+			'fields'     => $fields,
+		);
 		$meta_boxes[] = $meta_box;
 	}
 
