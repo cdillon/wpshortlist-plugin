@@ -29,8 +29,6 @@ add_filter( 'post_thumbnail_id', 'wpshortlist_post_thumbnail_id', 10, 2 );
 function wpshortlist_get_current_query_type() {
 	$qo = get_queried_object();
 
-	// How to identify proxy archive?
-
 	if ( is_post_type_archive() ) {
 		return array(
 			'type' => 'post_type_archive',

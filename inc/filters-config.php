@@ -14,17 +14,6 @@ function wpshortlist_set_config() {
 
 	$filter_sets = array();
 
-	// phpcs:ignore
-	/*
-	Loop:
-	foreach ( $config as $filter_set ) {
-		foreach ( $filter_set['filters'] as $filter ) {
-			foreach ( $filter['options'] as $option_id => $option_name ) {
-			}
-		}
-	}
-	*/
-
 	/*
 	 * Filter setup
 	 */

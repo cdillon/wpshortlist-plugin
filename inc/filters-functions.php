@@ -14,17 +14,18 @@ function wpshortlist_get_config() {
 
 /**
  * Return the filter set for the current taxonomy and term
- * or a specific taxonomy and term. Returns false if not found.
+ * or a specific taxonomy and term. Return false if not found.
  *
  * @param array $params  Parameters.
  *
  * @return array|false
  */
 function wpshortlist_get_filter_set( $params ) {
-	// This needs to use wpshortlist_get_current_query_type instead.
+	// Is there a way to autoload based on type+tax+term or type+name?
 	$config = wpshortlist_get_config();
 
 	foreach ( $config as $filter_set ) {
+		// @todo This needs to check filter set type (tax_archive or post_type_archive).
 		if ( $filter_set['taxonomy'] === $params['tax']
 				&& $filter_set['term'] === $params['term'] ) {
 			return $filter_set;

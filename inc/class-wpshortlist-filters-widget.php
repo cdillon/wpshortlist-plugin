@@ -34,6 +34,7 @@ class WPShortlist_Filters_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
+		// @todo build: replace with `if_has_filters`
 		if ( ! is_tax( 'wp_feature' ) ) {
 			return;
 		}
@@ -48,7 +49,6 @@ class WPShortlist_Filters_Widget extends WP_Widget {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
 
-		// @todo Pass current taxonomy to filters? Or just make the check above for any of our CT?
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo wpshortlist_filters();
 
