@@ -6,8 +6,8 @@
  */
 
 /**
- * Return the filter set for the current taxonomy and term
- * or a specific taxonomy and term. Return false if not found.
+ * Return the filter set for a specific taxonomy and term.
+ * Return false if not found.
  *
  * @param array $params  Parameters.
  *
@@ -16,6 +16,10 @@
  * @return array|false
  */
 function wpshortlist_get_filter_set( $params ) {
+	if ( ! $params ) {
+		return false;
+	}
+
 	$filter_set = false;
 
 	switch ( $params['type'] ) {
@@ -23,7 +27,7 @@ function wpshortlist_get_filter_set( $params ) {
 			$name = $params['tax'] . '-' . $params['term'];
 			break;
 		case 'post_type_archive':
-			$name = $params['post_type'] . '-' . $params['name'];
+			$name = $params['name'];
 			break;
 		default:
 			$name = '';
@@ -130,11 +134,6 @@ function wpshortlist_update_option_query_vars( $filter_set ) {
  * Return the filter set for the current page.
  */
 function wpshortlist_get_current_filter_set() {
-	$params = array(
-		'type' => 'tax_archive',
-		'tax'  => get_query_var( 'taxonomy' ),
-		'term' => get_query_var( 'term' ),
-	);
-
+	$params = wpshortlist_get_current_query_type();
 	return wpshortlist_get_filter_set( $params );
 }

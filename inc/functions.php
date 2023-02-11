@@ -32,7 +32,7 @@ function wpshortlist_get_current_query_type() {
 	if ( is_post_type_archive() ) {
 		return array(
 			'type' => 'post_type_archive',
-			'slug' => $qo->name,
+			'name' => $qo->name,
 		);
 	}
 
@@ -40,9 +40,9 @@ function wpshortlist_get_current_query_type() {
 		return array(
 			'type' => 'tax_archive',
 			'tax'  => $qo->taxonomy,
-			'slug' => $qo->slug,
+			'term' => $qo->slug,
 		);
 	}
 
-	return $qo;
+	return false;
 }
