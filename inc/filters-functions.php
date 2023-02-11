@@ -6,13 +6,6 @@
  */
 
 /**
- * Return our filters config array.
- */
-function wpshortlist_get_config() {
-	return get_option( 'wpshortlist_filters' );
-}
-
-/**
  * Return the filter set for the current taxonomy and term
  * or a specific taxonomy and term. Return false if not found.
  *
