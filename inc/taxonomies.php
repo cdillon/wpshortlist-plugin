@@ -22,7 +22,7 @@ require_once plugin_dir_path( __FILE__ ) . 'taxonomy-workflow.php';
 function wpshortlist_register_taxonomies() {
 	wpshortlist_register_taxonomy__feature_category();
 	wpshortlist_register_taxonomy__tool_type();
-	wpshortlist_register_taxonomy__wp_feature();
+	wpshortlist_register_taxonomy__feature();
 	wpshortlist_register_taxonomy__compatibility();
 	wpshortlist_register_taxonomy__workflow();
 }
@@ -35,7 +35,7 @@ add_action( 'init', 'wpshortlist_register_taxonomies' );
 function wpshortlist_unregister_taxonomies() {
 	unregister_taxonomy( 'feature_category' );
 	unregister_taxonomy( 'tool_type' );
-	unregister_taxonomy( 'wp_feature' );
+	unregister_taxonomy( 'feature' );
 	unregister_taxonomy( 'compatibility' );
 	unregister_taxonomy( 'workflow' );
 }

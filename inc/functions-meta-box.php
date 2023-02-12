@@ -57,7 +57,7 @@ add_filter( 'rwmb_meta_boxes', 'wpshortlist_meta_boxes' );
 function wpshortlist_rwmb_show( $show, $meta_box ) {
 	// phpcs:disable
 	if ( is_admin() && isset( $_GET['post'] ) ) {
-		if ( ! has_term( $meta_box['id'], 'wp_feature', $_GET['post'] ) ) {
+		if ( ! has_term( $meta_box['id'], 'feature', $_GET['post'] ) ) {
 			return false;
 		}
 	}

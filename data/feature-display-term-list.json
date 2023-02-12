@@ -1,7 +1,7 @@
 {
-	"name": "Display Terms Current Post",
-	"term": "display-terms-current-post",
-	"taxonomy": "wp_feature",
+	"name": "Display Term List",
+	"term": "display-term-list",
+	"taxonomy": "feature",
 	"taxonomy_title": "Feature",
 	"post_types": [
 		"tool"
@@ -10,12 +10,11 @@
 		{
 			"name": "How",
 			"id": "method",
-			"query_var": "method-display-terms-current-post",
+			"query_var": "method-display-term-list",
 			"meta_box_type": "checkbox_list",
 			"input_type": "radio",
 			"relation": "OR",
 			"options": {
-				"automatic": "automatic",
 				"block": "block",
 				"widget": "widget",
 				"shortcode": "shortcode"
@@ -24,7 +23,7 @@
 		{
 			"name": "For",
 			"id": "supports",
-			"query_var": "supports-display-terms-current-post",
+			"query_var": "supports-display-term-list",
 			"meta_box_type": "checkbox_list",
 			"input_type": "checkbox",
 			"relation": "AND",

@@ -32,7 +32,7 @@ function wpshortlist_change_sort_order( $query ) {
 	// Both admin and front end, regardless if main query.
 	// @todo Find a way to NOT hard code these.
 	$post_types = array( 'tool', 'category_proxy', 'feature_proxy' );
-	$taxonomies = array( 'wp_feature', 'feature_category', 'tool_type' );
+	$taxonomies = array( 'feature', 'feature_category', 'tool_type' );
 
 	if ( is_post_type_archive( $post_types ) || is_tax( $taxonomies ) ) {
 		$query->set( 'orderby', 'title' );

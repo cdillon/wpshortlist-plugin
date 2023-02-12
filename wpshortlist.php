@@ -62,7 +62,7 @@ register_deactivation_hook( __FILE__, 'wpshortlist_deactivate' );
 function wpshortlist_enqueue_scripts() {
 	// Only load on our CPT/CT archives.
 	// @todo Get CPT/CT from config.
-	if ( ! is_tax( 'wp_feature' ) && ! is_post_type_archive( 'tool' ) ) {
+	if ( ! is_tax( 'feature' ) && ! is_post_type_archive( 'tool' ) ) {
 		return;
 	}
 

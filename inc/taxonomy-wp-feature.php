@@ -8,7 +8,7 @@
 /**
  * Register taxonomy.
  */
-function wpshortlist_register_taxonomy__wp_feature() {
+function wpshortlist_register_taxonomy__feature() {
 
 	$labels = array(
 		'name'                       => esc_html__( 'Features', 'wpshortlist' ),
@@ -58,7 +58,7 @@ function wpshortlist_register_taxonomy__wp_feature() {
 		'query_var'             => 'feature',
 
 		'show_in_rest'          => true,
-		'rest_base'             => 'wp_feature',
+		'rest_base'             => 'feature',
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
 		'rest_namespace'        => 'wp/v2',
 
@@ -66,5 +66,5 @@ function wpshortlist_register_taxonomy__wp_feature() {
 		'path'                  => 'features',  // Must match rewrite slug.
 	);
 
-	register_taxonomy( 'wp_feature', array( 'tool' ), $args );
+	register_taxonomy( 'feature', array( 'tool' ), $args );
 }
