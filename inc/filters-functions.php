@@ -6,6 +6,40 @@
  */
 
 /**
+ * Return the current query type and values.
+ *
+ * @return array
+ */
+function wpshortlist_get_current_query_type() {
+	$qo = get_queried_object();
+
+	if ( is_post_type_archive() ) {
+		return array(
+			'type' => 'post_type_archive',
+			'name' => $qo->name,
+		);
+	}
+
+	if ( is_category() || is_tag() || is_tax() ) {
+		return array(
+			'type' => 'tax_archive',
+			'tax'  => $qo->taxonomy,
+			'term' => $qo->slug,
+		);
+	}
+
+	return false;
+}
+
+/**
+ * Return the filter set for the current page.
+ */
+function wpshortlist_get_current_filter_set() {
+	$params = wpshortlist_get_current_query_type();
+	return wpshortlist_get_filter_set( $params );
+}
+
+/**
  * Return the filter set for a specific taxonomy and term.
  * Return false if not found.
  *
@@ -128,12 +162,4 @@ function wpshortlist_update_option_query_vars( $filter_set ) {
 		}
 	}
 	update_option( 'wpshortlist_query_vars', array_unique( $query_vars ) );
-}
-
-/**
- * Return the filter set for the current page.
- */
-function wpshortlist_get_current_filter_set() {
-	$params = wpshortlist_get_current_query_type();
-	return wpshortlist_get_filter_set( $params );
 }

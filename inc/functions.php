@@ -20,29 +20,3 @@ function wpshortlist_post_thumbnail_id( $thumbnail_id, $post ) {
 }
 
 add_filter( 'post_thumbnail_id', 'wpshortlist_post_thumbnail_id', 10, 2 );
-
-/**
- * Return the current query type and values.
- *
- * @return array
- */
-function wpshortlist_get_current_query_type() {
-	$qo = get_queried_object();
-
-	if ( is_post_type_archive() ) {
-		return array(
-			'type' => 'post_type_archive',
-			'name' => $qo->name,
-		);
-	}
-
-	if ( is_category() || is_tag() || is_tax() ) {
-		return array(
-			'type' => 'tax_archive',
-			'tax'  => $qo->taxonomy,
-			'term' => $qo->slug,
-		);
-	}
-
-	return false;
-}
