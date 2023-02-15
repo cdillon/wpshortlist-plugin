@@ -3,6 +3,7 @@
 	"rules": [
 		"tax_archive:feature:display-current-post"
 	],
+	"order": 100,
 	"term": "display-terms-current-post",
 	"taxonomy": "feature",
 	"taxonomy_title": "Feature",

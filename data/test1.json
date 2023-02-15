@@ -3,5 +3,6 @@
 	"rules": [
 		"tax_archive:feature"
 	],
+	"order": 10,
 	"content": "Test filter for the Feature taxonomy archive."
 }

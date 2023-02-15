@@ -80,9 +80,10 @@ function wpshortlist_get_filter_set( $params ) {
 	// Match filter set rules against the current page conditions.
 	foreach ( $filter_sets as $filter_set ) {
 		if ( isset( $filter_set['rules'] ) && array_intersect( $variants, (array) $filter_set['rules'] ) ) {
-			$active_filters[] = $filter_set;
+			$active_filters[ $filter_set['order'] ] = $filter_set;
 		}
 	}
+	ksort( $active_filters );
 
 	// phpcs:ignore
 	// q2( $active_filters, 'ACTIVE FILTERS' );
