@@ -137,7 +137,7 @@ function wpshortlist_alter_query( $query ) {
 
 	// Check each filter.
 	foreach ( $filter_sets as $filter_set ) {
-		if ( ! isset( $filter_set['rules'] ) ) {
+		if ( ! isset( $filter_set['filters'] ) ) {
 			continue;
 		}
 
