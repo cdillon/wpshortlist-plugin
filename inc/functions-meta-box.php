@@ -15,32 +15,39 @@ function wpshortlist_meta_boxes( $meta_boxes ) {
 		return $meta_boxes;
 	}
 
-	// Get list of filter set names.
-	$names = get_option( 'wpshortlist_filter_set_names', array() );
-	if ( ! $names ) {
+	// Get filter sets.
+	$filter_sets = get_option( 'wpshortlist_filter_sets' );
+	if ( ! $filter_sets ) {
 		return $meta_boxes;
 	}
 
-	foreach ( $names as $name ) {
-		$filter_set = get_option( $name );
-
-		$fields = array();
-		foreach ( $filter_set['filters'] as $filter ) {
-			$fields[] = array(
-				'name'    => $filter['name'],
-				'id'      => $filter['query_var'],
-				'type'    => $filter['meta_box_type'],
-				'options' => $filter['options'],
-			);
+	foreach ( $filter_sets as $filter_set ) {
+		if ( ! isset( $filter_set['filters'] ) ) {
+			continue;
 		}
 
-		$meta_box     = array(
-			'id'         => $filter_set['term'],
-			'title'      => $filter_set['taxonomy_title'] . ': ' . $filter_set['name'],
-			'post_types' => $filter_set['post_types'],
-			'fields'     => $fields,
-		);
-		$meta_boxes[] = $meta_box;
+		$fields = array();
+
+		foreach ( $filter_set['filters'] as $filter ) {
+			if ( isset( $filter['meta_box_type'] ) && $filter['meta_box_type'] ) {
+				$fields[] = array(
+					'name'    => $filter['name'],
+					'id'      => $filter['query_var'],
+					'type'    => $filter['meta_box_type'],
+					'options' => $filter['options'],
+				);
+			}
+		}
+
+		if ( $fields ) {
+			$meta_box     = array(
+				'id'         => $filter_set['term'],
+				'title'      => $filter_set['taxonomy_title'] . ': ' . $filter_set['name'],
+				'post_types' => $filter_set['post_types'],
+				'fields'     => $fields,
+			);
+			$meta_boxes[] = $meta_box;
+		}
 	}
 
 	return $meta_boxes;

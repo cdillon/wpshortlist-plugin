@@ -1,0 +1,7 @@
+{
+	"name": "Test 1",
+	"rules": [
+		"tax_archive:feature"
+	],
+	"content": "Test filter for the Feature taxonomy archive."
+}

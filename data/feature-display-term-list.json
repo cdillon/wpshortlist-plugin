@@ -1,5 +1,8 @@
 {
 	"name": "Display Term List",
+	"rules": [
+		"tax_archive:feature:display-term-list"
+	],
 	"term": "display-term-list",
 	"taxonomy": "feature",
 	"taxonomy_title": "Feature",
@@ -10,6 +13,9 @@
 		{
 			"name": "How",
 			"id": "method",
+
+			"type": "post_meta",
+
 			"query_var": "method-display-term-list",
 			"meta_box_type": "checkbox_list",
 			"input_type": "radio",

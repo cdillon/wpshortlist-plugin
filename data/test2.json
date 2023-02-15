@@ -1,0 +1,8 @@
+{
+	"name": "Test 2",
+	"rules": [
+		"tax_archive:feature_category",
+		"post_type_archive:feature_proxy"
+	],
+	"content": "Test filter #2 for any Feature Proxy archive."
+}

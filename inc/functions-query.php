@@ -13,10 +13,26 @@
  * @return array
  */
 function wpshortlist_register_query_vars( $vars ) {
-	$qv = get_option( 'wpshortlist_query_vars' );
-	if ( $qv ) {
-		$vars = array_merge( $vars, $qv );
+	$filter_sets = get_option( 'wpshortlist_filter_sets' );
+	if ( ! $filter_sets ) {
+		return $vars;
 	}
+
+	$new_vars = array();
+
+	foreach ( $filter_sets as $filter_set ) {
+		if ( ! isset( $filter_set['filters'] ) ) {
+			continue;
+		}
+
+		foreach ( $filter_set['filters'] as $filter ) {
+			if ( isset( $filter['query_var'] ) && $filter['query_var'] ) {
+				$new_vars[] = $filter['query_var'];
+			}
+		}
+	}
+
+	$vars = array_merge( $vars, $new_vars );
 
 	return $vars;
 }
@@ -112,47 +128,44 @@ function wpshortlist_alter_query( $query ) {
 		return;
 	}
 
-	$qo = $query->queried_object;
-	// @todo This needs to handle post type archive too. Or bail for other specific non-qo cases.
-	if ( ! isset( $qo->taxonomy ) ) {
-		return;
-	}
-
 	$meta_query = array();
 
-	// Find filter by query var.
-	$filter_set_name = 'filter_set-' . $qo->taxonomy . '-' . $qo->slug;
-	$filter_set      = get_option( $filter_set_name );
-
-	if ( ! $filter_set ) {
+	$filter_sets = wpshortlist_get_current_filter_set();
+	if ( ! $filter_sets ) {
 		return;
 	}
 
 	// Check each filter.
-	foreach ( $filter_set['filters'] as $filter ) {
-		if ( ! isset( $query->query[ $filter['query_var'] ] ) ) {
+	foreach ( $filter_sets as $filter_set ) {
+		if ( ! isset( $filter_set['rules'] ) ) {
 			continue;
 		}
 
-		// Disassemble multiple values.
-		$q_values = explode( '|', $query->query[ $filter['query_var'] ] );
+		foreach ( $filter_set['filters'] as $filter ) {
+			if ( ! isset( $query->query[ $filter['query_var'] ] ) ) {
+				continue;
+			}
 
-		if ( 'AND' === $filter['relation'] ) {
-			// Add a meta query for each option value.
-			foreach ( $q_values as $q_value ) {
+			// Disassemble multiple values.
+			$q_values = explode( '|', $query->query[ $filter['query_var'] ] );
+
+			if ( 'AND' === $filter['relation'] ) {
+				// Add a meta query for each option value.
+				foreach ( $q_values as $q_value ) {
+					$meta_query[] = array(
+						'key'     => $filter['query_var'],
+						'value'   => $q_value,
+						'compare' => '=',
+					);
+				}
+			} else {
+				// Add a single query with an array of option values.
 				$meta_query[] = array(
 					'key'     => $filter['query_var'],
-					'value'   => $q_value,
-					'compare' => '=',
+					'value'   => $q_values,
+					'compare' => 'IN',
 				);
 			}
-		} else {
-			// Add a single query with an array of option values.
-			$meta_query[] = array(
-				'key'     => $filter['query_var'],
-				'value'   => $q_values,
-				'compare' => 'IN',
-			);
 		}
 	}
 

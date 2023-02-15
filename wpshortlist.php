@@ -41,6 +41,8 @@ function wpshortlist_activate() {
 	wpshortlist_register_post_types();
 	wpshortlist_register_taxonomies();
 	flush_rewrite_rules();
+
+	wpshortlist_load_filter_sets();
 }
 
 register_activation_hook( __FILE__, 'wpshortlist_activate' );

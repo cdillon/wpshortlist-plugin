@@ -33,9 +33,15 @@ HTML Structure:
 			<?php wpshortlist_print_filter_reset_all(); ?>
 		</div>
 	</div>
+	<?php foreach ( $filter_sets as $filter_set ) : ?>
 	<div class="wpshortlist-filterset">
+		<?php wpshortlist_print_filter_set_content( $filter_set ); ?>
+		<?php
+		if ( ! isset( $filter_set['filters'] ) ) {
+			continue;
+		}
+		?>
 		<?php foreach ( $filter_set['filters'] as $filter ) : ?>
-
 		<div class="wpshortlist-filter"
 				data-filter_name="<?php echo esc_attr( $filter['query_var'] ); ?>"
 				data-filter_type="<?php echo esc_attr( $filter['input_type'] ); ?>">
@@ -55,4 +61,5 @@ HTML Structure:
 
 		<?php endforeach; ?>
 	</div><!-- .wpshortlist-filterset -->
+	<?php endforeach; ?>
 </form>

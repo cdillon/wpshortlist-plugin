@@ -17,28 +17,21 @@ function wpshortlist_ajax_handler() {
 	REQUEST: Array
 	(
 		[action] => filter_change
-		[nonce] => 90e6a55f84
+		[nonce] => b1963d2221
+		[pathname] => /features/display-term-list/
 		[formData] => Array
 			(
-				[method] => block
+				[method-display-term-list] => Array
+					(
+						[0] => block
+					)
+				[supports-display-term-list] => Array
+					(
+						[0] => tags
+					)
 			)
-		[taxonomy] => features
-		[term] => display-term-list
 	)
 
-	INPUT: Array
-	(
-		[method-display-term-list] => Array
-			(
-				[0] => block
-			)
-
-		[supports-display-term-list] => Array
-			(
-				[0] => tags
-			)
-
-	)
 
 	OUTPUT: Array
 	(
@@ -100,28 +93,33 @@ function wpshortlist_ajax_handler() {
 	 */
 
 	// Assemble the query vars.
-	$new_args   = array();
-	$params     = array(
+	$new_args    = array();
+	$params      = array(
 		'type' => 'tax_archive',
 		'tax'  => $current_taxonomy,
 		'term' => $current_term,
 	);
-	$filter_set = wpshortlist_get_filter_set( $params );
-	if ( ! $filter_set ) {
+	$filter_sets = wpshortlist_get_filter_set( $params );
+	if ( ! $filter_sets ) {
 		wp_send_json_error( 'filter not found' );
 	}
 
-	foreach ( $filter_set['filters'] as $filter ) {
-		// Each filter has options. Get those option names.
-		$option_names = array_keys( $filter['options'] );
-		// Compare request to those options.
-		foreach ( $search_args as $arg_key => $arg_values ) {
-			// Does the requested param match the filter's query var?
-			if ( $arg_key === $filter['query_var'] ) {
-				// Assemble valid args.
-				foreach ( $arg_values as $arg_value ) {
-					if ( in_array( $arg_value, $option_names, true ) ) {
-						$new_args[ $arg_key ][] = $arg_value;
+	foreach ( $filter_sets as $filter_set ) {
+		if ( ! isset( $filter_set['filters'] ) ) {
+			continue;
+		}
+		foreach ( $filter_set['filters'] as $filter ) {
+			// Each filter has options. Get those option names.
+			$option_names = array_keys( $filter['options'] );
+			// Compare request to those options.
+			foreach ( $search_args as $arg_key => $arg_values ) {
+				// Does the requested param match the filter's query var?
+				if ( $arg_key === $filter['query_var'] ) {
+					// Assemble valid args.
+					foreach ( $arg_values as $arg_value ) {
+						if ( in_array( $arg_value, $option_names, true ) ) {
+							$new_args[ $arg_key ][] = $arg_value;
+						}
 					}
 				}
 			}
@@ -135,6 +133,7 @@ function wpshortlist_ajax_handler() {
 
 	// Assemble the URL.
 	if ( $new_args ) {
+		// ---------- Should this use get_term_link instead? ----------
 		$new_url = add_query_arg( $new_args, home_url( $request['pathname'] ) );
 		wp_send_json_success( $new_url );
 	}

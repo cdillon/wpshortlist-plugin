@@ -9,8 +9,8 @@
  * Print our filters. Called by widget.
  */
 function wpshortlist_filters() {
-	$filter_set = wpshortlist_get_current_filter_set();
-	if ( ! $filter_set ) {
+	$filter_sets = wpshortlist_get_current_filter_set();
+	if ( ! $filter_sets ) {
 		return;
 	}
 
@@ -95,7 +95,7 @@ function wpshortlist_filter_list_item( $args ) {
 /**
  * Print filter actions.
  *
- * @param  array $filter  A filter.
+ * @param array $filter  A filter.
  *
  * @return void
  */
@@ -172,7 +172,7 @@ function wpshortlist_print_filter_reset_all() {
 /**
  * Print 'relation' explainer.
  *
- * @param  array $filter  A filter.
+ * @param array $filter  A filter.
  *
  * @return void
  */
@@ -181,6 +181,23 @@ function wpshortlist_print_explainer( $filter ) {
 		?>
 		<div class="wpshortlist-explainer">
 			<?php echo esc_html( $filter['relation_desc'] ); ?>
+		</div>
+		<?php
+	}
+}
+
+/**
+ * Print filter content.
+ *
+ * @param array $filter_set  A filter set.
+ *
+ * @return void
+ */
+function wpshortlist_print_filter_set_content( $filter_set ) {
+	if ( isset( $filter_set['content'] ) && $filter_set['content'] ) {
+		?>
+		<div class="wpshortlist-filter-set-content">
+			<?php echo esc_html( $filter_set['content'] ); ?>
 		</div>
 		<?php
 	}

@@ -1,5 +1,8 @@
 {
 	"name": "Display Terms Current Post",
+	"rules": [
+		"tax_archive:feature:display-current-post"
+	],
 	"term": "display-terms-current-post",
 	"taxonomy": "feature",
 	"taxonomy_title": "Feature",
