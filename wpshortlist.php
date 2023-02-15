@@ -54,6 +54,8 @@ function wpshortlist_deactivate() {
 	wpshortlist_unregister_post_types();
 	wpshortlist_unregister_taxonomies();
 	flush_rewrite_rules();
+
+	delete_option( 'wpshortlist_filter_sets' );
 }
 
 register_deactivation_hook( __FILE__, 'wpshortlist_deactivate' );
