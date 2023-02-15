@@ -13,6 +13,19 @@
 function wpshortlist_get_current_query_type() {
 	$qo = get_queried_object();
 
+	if ( is_home() ) {
+		return array(
+			'type' => 'blog_index',
+		);
+	}
+
+	if ( is_single() ) {
+		return array(
+			'type' => 'single',
+			'name' => $qo->post_type,
+		);
+	}
+
 	if ( is_post_type_archive() ) {
 		return array(
 			'type' => 'post_type_archive',
@@ -51,6 +64,9 @@ function wpshortlist_get_current_filter_set() {
  */
 function wpshortlist_get_filter_set( $params ) {
 	q2( $params, __FUNCTION__ );
+	if ( ! $params ) {
+		return false;
+	}
 
 	$filter_sets = get_option( 'wpshortlist_filter_sets' );
 	if ( ! $filter_sets ) {
