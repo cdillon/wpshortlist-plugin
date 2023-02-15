@@ -78,8 +78,9 @@ function wpshortlist_get_filter_set( $params ) {
 	}
 
 	// Match filter set rules against the current page conditions.
-	foreach ( $filter_sets as $filter_set ) {
-		if ( isset( $filter_set['rules'] ) && array_intersect( $variants, (array) $filter_set['rules'] ) ) {
+	$has_rules = wpshortlist_get_filter_sets_with( $filter_sets, 'rules' );
+	foreach ( $has_rules as $filter_set ) {
+		if ( array_intersect( $variants, (array) $filter_set['rules'] ) ) {
 			$active_filters[ $filter_set['order'] ] = $filter_set;
 		}
 	}
@@ -121,4 +122,23 @@ function wpshortlist_load_filter_sets() {
 
 	q2( $filter_sets, '', 'o', 'filter-sets.log' );
 	update_option( 'wpshortlist_filter_sets', $filter_sets );
+}
+
+/**
+ * Return filter sets that have a specific element; e.g. 'rules'.
+ *
+ * @param array  $filter_sets  Filter sets.
+ * @param string $criterion  The element to check for.
+ */
+function wpshortlist_get_filter_sets_with( $filter_sets, $criterion ) {
+	if ( ! $filter_sets || ! $criterion ) {
+		return $filter_sets;
+	}
+
+	return array_filter(
+		$filter_sets,
+		function( $f ) use ( $criterion ) {
+			return ( isset( $f[ $criterion ] ) && $f[ $criterion ] );
+		}
+	);
 }

@@ -21,11 +21,9 @@ function wpshortlist_meta_boxes( $meta_boxes ) {
 		return $meta_boxes;
 	}
 
-	foreach ( $filter_sets as $filter_set ) {
-		if ( ! isset( $filter_set['filters'] ) ) {
-			continue;
-		}
-
+	// Iterate filter sets that have filters.
+	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
+	foreach ( $has_filters as $filter_set ) {
 		$fields = array();
 
 		foreach ( $filter_set['filters'] as $filter ) {

@@ -20,11 +20,9 @@ function wpshortlist_register_query_vars( $vars ) {
 
 	$new_vars = array();
 
-	foreach ( $filter_sets as $filter_set ) {
-		if ( ! isset( $filter_set['filters'] ) ) {
-			continue;
-		}
-
+	// Iterate filter sets that have filters.
+	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
+	foreach ( $has_filters as $filter_set ) {
 		foreach ( $filter_set['filters'] as $filter ) {
 			if ( isset( $filter['query_var'] ) && $filter['query_var'] ) {
 				$new_vars[] = $filter['query_var'];
@@ -135,12 +133,9 @@ function wpshortlist_alter_query( $query ) {
 		return;
 	}
 
-	// Check each filter.
-	foreach ( $filter_sets as $filter_set ) {
-		if ( ! isset( $filter_set['filters'] ) ) {
-			continue;
-		}
-
+	// Iterate filter sets that have filters.
+	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
+	foreach ( $has_filters as $filter_set ) {
 		foreach ( $filter_set['filters'] as $filter ) {
 			if ( ! isset( $query->query[ $filter['query_var'] ] ) ) {
 				continue;

@@ -104,10 +104,9 @@ function wpshortlist_ajax_handler() {
 		wp_send_json_error( 'filter not found' );
 	}
 
-	foreach ( $filter_sets as $filter_set ) {
-		if ( ! isset( $filter_set['filters'] ) ) {
-			continue;
-		}
+	// Iterate filter sets that have filters.
+	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
+	foreach ( $has_filters as $filter_set ) {
 		foreach ( $filter_set['filters'] as $filter ) {
 			// Each filter has options. Get those option names.
 			$option_names = array_keys( $filter['options'] );
