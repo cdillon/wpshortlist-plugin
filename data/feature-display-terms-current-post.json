@@ -1,7 +1,7 @@
 {
 	"name": "Display Terms Current Post",
 	"rules": [
-		"tax_archive:feature:display-current-post"
+		"tax_archive:feature:display-terms-current-post"
 	],
 	"order": 100,
 	"term": "display-terms-current-post",
