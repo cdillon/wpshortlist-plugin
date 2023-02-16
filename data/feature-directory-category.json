@@ -1,0 +1,25 @@
+{
+	"name": "Feature Category",
+	"rules": [
+		"post_type_archive:feature_proxy",
+		"tax_archive:feature_category"
+	],
+	"order": 100,
+	"post_types": [
+		"feature_proxy"
+	],
+	"filters": [
+		{
+			"name": "Feature Category",
+			"id": "feature-category",
+			"type": "tax_query",
+			"query_var": "feature_category",
+			"input_type": "radio",
+			"relation": "OR",
+			"options": {
+				"posts": "Posts",
+				"taxonomies": "Taxonomies"
+			}
+		}
+	]
+}

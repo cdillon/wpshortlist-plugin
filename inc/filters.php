@@ -39,16 +39,32 @@ function wpshortlist_get_current_url() {
  * @return void
  */
 function wpshortlist_print_filter_list( $filter ) {
+	$current_query = wpshortlist_get_current_query_type();
 	?>
 	<ul class="wpshortlist-filter-list">
 	<?php
 	foreach ( $filter['options'] as $option_id => $option_name ) :
+		$checked = false;
 
 		// Build a unique ID like 'supports-display-term-list-tags'.
 		$input_id = $filter['query_var'] . '-' . $option_id;
 
-		$q_value = get_query_var( $filter['query_var'] );
-		$checked = in_array( $option_id, explode( '|', $q_value ), true );
+		// @todo Convert these to a switch?
+
+		// Post meta are query string parameters (a.k.a. search args)
+		// and are available through `get_query_var()`.
+		// May be present on tax archives or post type archives.
+		if ( 'post_meta' === $filter['type'] ) {
+			$q_value = get_query_var( $filter['query_var'] );
+			$checked = in_array( $option_id, explode( '|', $q_value ), true );
+		}
+
+		// Taxonomy and terms are available through `$current_query`.
+		// Must check if we are on a tax archive because the filter may be
+		// present on post type archives too.
+		if ( 'tax_query' === $filter['type'] && 'tax_archive' === $current_query['type'] ) {
+			$checked = $option_id === $current_query['term'];
+		}
 
 		$args = array(
 			'type'    => $filter['input_type'],

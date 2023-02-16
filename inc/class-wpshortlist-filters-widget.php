@@ -34,7 +34,10 @@ class WPShortlist_Filters_Widget extends WP_Widget {
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
-		// @todo Make conditional. Check if current query has filters.
+		// Only load if the current page has a filter set.
+		if ( ! wpshortlist_get_current_filter_set() ) {
+			return;
+		}
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 

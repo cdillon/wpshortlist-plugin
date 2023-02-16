@@ -14,6 +14,7 @@
 		{
 			"name": "How",
 			"id": "method",
+			"type": "post_meta",
 			"query_var": "method-display-terms-current-post",
 			"meta_box_type": "checkbox_list",
 			"input_type": "radio",
@@ -28,6 +29,7 @@
 		{
 			"name": "For",
 			"id": "supports",
+			"type": "post_meta",
 			"query_var": "supports-display-terms-current-post",
 			"meta_box_type": "checkbox_list",
 			"input_type": "checkbox",

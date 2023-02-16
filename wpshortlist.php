@@ -64,9 +64,8 @@ register_deactivation_hook( __FILE__, 'wpshortlist_deactivate' );
  * Load scripts and styles.
  */
 function wpshortlist_enqueue_scripts() {
-	// Only load on our CPT/CT archives.
-	// @todo Get CPT/CT from config.
-	if ( ! is_tax( 'feature' ) && ! is_post_type_archive( 'tool' ) ) {
+	// Only load if the current page has a filter set.
+	if ( ! wpshortlist_get_current_filter_set() ) {
 		return;
 	}
 
@@ -75,12 +74,14 @@ function wpshortlist_enqueue_scripts() {
 	// @todo Get actual script version number.
 	wp_enqueue_script( 'wpshortlist', plugins_url( '/js/wpshortlist.js', __FILE__ ), array( 'jquery' ), '1.0', true );
 
-	$data = array(
+	$current = wpshortlist_get_current_query_type();
+	$data    = array(
 		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 		'action'  => 'filter_change',
 		'nonce'   => wp_create_nonce( 'wpshortlist' ),
+		'current' => $current,
 	);
-	$code = 'const wpshortlistSettings = ' . wp_json_encode( $data );
+	$code    = 'const wpshortlistSettings = ' . wp_json_encode( $data );
 	wp_add_inline_script( 'wpshortlist', $code );
 }
 
@@ -94,3 +95,15 @@ function wpshortlist_load_widgets() {
 }
 
 add_action( 'widgets_init', 'wpshortlist_load_widgets' );
+
+/**
+ * Initialize.
+ */
+function wpshortlist_init() {
+	// Compile list of filter sets, if missing.
+	if ( ! get_option( 'wpshortlist_filter_sets' ) ) {
+		wpshortlist_load_filter_sets();
+	}
+}
+
+add_action( 'init', 'wpshortlist_init' );

@@ -50,7 +50,7 @@ function wpshortlist_get_current_query_type() {
 function wpshortlist_get_current_filter_set() {
 	$params = wpshortlist_get_current_query_type();
 	// phpcs:ignore
-	// q2($params,'CURRENT QUERY TYPE');
+	//q2($params,'CURRENT QUERY TYPE');
 	return wpshortlist_get_filter_set( $params );
 }
 
@@ -63,7 +63,6 @@ function wpshortlist_get_current_filter_set() {
  * @return array|false
  */
 function wpshortlist_get_filter_set( $params ) {
-	q2( $params, __FUNCTION__ );
 	if ( ! $params ) {
 		return false;
 	}
@@ -130,7 +129,9 @@ function wpshortlist_load_filter_sets() {
 		if ( $json ) {
 			// Save new filter set.
 			$filter_set = json_decode( $json, true );
-			if ( $filter_set ) {
+			if ( is_null( $filter_set ) ) {
+				q2( $file, 'Error: invalid JSON' );
+			} else {
 				$filter_sets[] = $filter_set;
 			}
 		}
@@ -141,10 +142,11 @@ function wpshortlist_load_filter_sets() {
 }
 
 /**
- * Return filter sets that have a specific element; e.g. 'rules'.
+ * Return filter sets that have a specific element.
  *
  * @param array  $filter_sets  Filter sets.
- * @param string $criterion  The element to check for.
+ * @param string $criterion    The element to check for.
+ *                             For example, 'rules' or 'filters'.
  */
 function wpshortlist_get_filter_sets_with( $filter_sets, $criterion ) {
 	if ( ! $filter_sets || ! $criterion ) {
@@ -157,4 +159,26 @@ function wpshortlist_get_filter_sets_with( $filter_sets, $criterion ) {
 			return ( isset( $f[ $criterion ] ) && $f[ $criterion ] );
 		}
 	);
+}
+
+/**
+ * Return filter sets with filters that have a specific query var.
+ *
+ * @param string $query_var  A query var.
+ */
+function wpshortlist_get_filter_by_query_var( $query_var ) {
+	if ( ! $query_var ) {
+		return false;
+	}
+
+	$filter_sets = wpshortlist_get_filter_sets_with( get_option( 'wpshortlist_filter_sets' ), 'filters' );
+	foreach ( $filter_sets as $filter_set ) {
+		foreach ( $filter_set['filters'] as $filter ) {
+			if ( $query_var === $filter['query_var'] ) {
+				return $filter;
+			}
+		}
+	}
+
+	return false;
 }

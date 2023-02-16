@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			input.checked = false;
 		});
 
-		// recheck inputs that match query string
+		// recheck post_meta inputs that match query string
 		for (const [key, value] of urlParams.entries()) {
 			let multipleValues = value.split('|');
 			for (singleValue of multipleValues) {
@@ -52,6 +52,15 @@ document.addEventListener("DOMContentLoaded", function () {
 					.checked = true;
 			}
 		}
+
+		// recheck tax_query inputs that match initial settings
+		let tax   = wpshortlistSettings.current.tax;
+		let term  = wpshortlistSettings.current.term;
+		let input = wpshortlistForm.querySelector(`#${tax}-${term}`);
+		if ( input !== null ) {
+			input.checked = true;
+		}
+
 	}
 
 	// Set a timer for the Back-button hack.
@@ -101,7 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		let allData = {
 			'action': wpshortlistSettings.action,
 			'nonce': wpshortlistSettings.nonce,
-			'pathname': currentUrl.pathname
+			'pathname': currentUrl.pathname,
+			'current': wpshortlistSettings.current
 		}
 
 		let formData = serializeForm(wpshortlistForm);
@@ -116,14 +126,15 @@ document.addEventListener("DOMContentLoaded", function () {
 			allData,
 			function (response) {
 				if (response.success) {
-					console.log(response.data);
+					// console.log(response.data);
 					location.assign(response.data);
 				}
 			},
 		)
-			// .done(function (msg) { console.log(msg) })
+			.done(function (msg) { console.log(msg) })
 			.fail(function (xhr, status, error) {
-				// error handling
+				console.log(status);
+				console.log(error);
 			});
 	}
 

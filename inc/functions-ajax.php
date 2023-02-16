@@ -31,109 +31,76 @@ function wpshortlist_ajax_handler() {
 					)
 			)
 	)
-
-
-	OUTPUT: Array
-	(
-		[method-display-term-list] => block
-		[supports-display-term-list] => tags
-	)
 	*/
 	// phpcs:enable
 
-	/**
-	 * Sanitize the request and get our values.
-	 */
-
+	// Sanitize the request.
 	$request = map_deep( wp_unslash( (array) $_REQUEST ), 'sanitize_text_field' );
 
-	// If form empty, simply return to taxonomy archive page.
+	$new_url  = home_url( $request['pathname'] );
+	$new_args = array();
+
+	// If form empty, simply return to current page.
 	if ( ! isset( $request['formData'] ) ) {
-		wp_send_json_success( home_url( $request['pathname'] ) );
+		wp_send_json_success( $new_url );
 	}
 
 	// Get form values.
-	$search_args = (array) $request['formData'];
+	$search_params = (array) $request['formData'];
 
-	// Get pathname. Expecting pretty permalinks like /{taxonomy}/{term}.
-	// Would need to adjust for old-school query string.
-	$tax_args = explode( '/', trim( $request['pathname'], '/' ) );
-	if ( 2 !== count( $tax_args ) ) {
-		wp_send_json_error( 'invalid pathname' );
-	}
+	// Iterate search arguments.
+	foreach ( $search_params as $s_arg => $s_values ) {
 
-	$current_tax_slug = $tax_args[0];
-	if ( ! $current_tax_slug ) {
-		wp_send_json_error( 'missing taxonomy' );
-	}
+		// Find the filter for each query_var.
+		$filter = wpshortlist_get_filter_by_query_var( $s_arg );
 
-	$current_term = $tax_args[1];
-	if ( ! $current_term ) {
-		wp_send_json_error( 'missing term' );
-	}
+		if ( ! $filter ) {
+			// @todo How to fail gracefully here?
+			wp_send_json_error( 'filter for ' . $s_arg . ' not found' );
+		}
 
-	// Find taxonomies using our custom `path` property.
-	$matching_taxonomies = get_taxonomies(
-		array(
-			'public' => true,
-			'path'   => $current_tax_slug,
-		),
-		'names'
-	);
+		switch ( $filter['type'] ) {
 
-	if ( empty( $matching_taxonomies ) ) {
-		wp_send_json_error( 'taxonomy not found' );
-	}
+			case 'tax_query':
+				// Get the pretty tax_archive URL. There can be only one.
+				$archive = get_term_link( $s_values[0], $s_arg );
+				if ( is_wp_error( $archive ) ) {
+					wp_send_json_error( 'term archive link not found' );
+				} else {
+					$new_url = $archive;
+				}
+				break;
 
-	// Assuming only one taxonomy found.
-	$current_taxonomy = array_keys( $matching_taxonomies )[0];
-
-	/**
-	 * Build the requested URL.
-	 */
-
-	// Assemble the query vars.
-	$new_args    = array();
-	$params      = array(
-		'type' => 'tax_archive',
-		'tax'  => $current_taxonomy,
-		'term' => $current_term,
-	);
-	$filter_sets = wpshortlist_get_filter_set( $params );
-	if ( ! $filter_sets ) {
-		wp_send_json_error( 'filter not found' );
-	}
-
-	// Iterate filter sets that have filters.
-	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
-	foreach ( $has_filters as $filter_set ) {
-		foreach ( $filter_set['filters'] as $filter ) {
-			// Each filter has options. Get those option names.
-			$option_names = array_keys( $filter['options'] );
-			// Compare request to those options.
-			foreach ( $search_args as $arg_key => $arg_values ) {
-				// Does the requested param match the filter's query var?
-				if ( $arg_key === $filter['query_var'] ) {
-					// Assemble valid args.
-					foreach ( $arg_values as $arg_value ) {
-						if ( in_array( $arg_value, $option_names, true ) ) {
-							$new_args[ $arg_key ][] = $arg_value;
-						}
+			case 'post_meta':
+				// Assemble the search arguments.
+				$option_names = array_keys( $filter['options'] );
+				foreach ( $s_values as $arg_value ) {
+					if ( in_array( $arg_value, $option_names, true ) ) {
+						$new_args[ $s_arg ][] = $arg_value;
 					}
 				}
-			}
+				break;
+
+			case 'tax_query_via_query_var':
+				// Not sure yet.
+				break;
+
+			default:
+				wp_send_json_error();
 		}
 	}
 
-	// Convert multiple values into a delimited string.
+	// If post_meta, convert multiple values into a delimited string.
 	foreach ( $new_args as $qkey => $qval ) {
 		$new_args[ $qkey ] = implode( '|', $qval );
 	}
 
 	// Assemble the URL.
-	if ( $new_args ) {
-		// ---------- Should this use get_term_link instead? ----------
-		$new_url = add_query_arg( $new_args, home_url( $request['pathname'] ) );
+	if ( $new_url && $new_args ) {
+		$new_url = add_query_arg( $new_args, $new_url );
+	}
+
+	if ( $new_url ) {
 		wp_send_json_success( $new_url );
 	}
 
