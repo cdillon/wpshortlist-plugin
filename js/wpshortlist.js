@@ -74,8 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Action router.
 	function formClickHandler(event) {
-		showOverlay();
-
 		const action = event.target.dataset.action;
 		switch (action) {
 
@@ -95,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
 				break;
 
 			default:
-				hideOverlay();
 		}
 
 	}
@@ -103,6 +100,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Submit the form via Ajax and redirect.
 	function formChangeHandler(event) {
 		event.preventDefault();
+
+		showOverlay();
 
 		// Get URL path parts.
 		// Won't need currentUrl or pathname if we have filter_set.starting_point
