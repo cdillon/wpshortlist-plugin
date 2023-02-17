@@ -65,23 +65,24 @@ register_deactivation_hook( __FILE__, 'wpshortlist_deactivate' );
  */
 function wpshortlist_enqueue_scripts() {
 	// Only load if the current page has a filter set.
-	if ( ! wpshortlist_get_current_filter_set() ) {
+	$start = wpshortlist_get_start();
+	if ( ! $start ) {
 		return;
 	}
 
+	// @todo Use plugin's version number.
 	wp_enqueue_style( 'wpshortlist', plugins_url( '/css/style.css', __FILE__ ), array(), '1.0', 'all' );
 
-	// @todo Get actual script version number.
 	wp_enqueue_script( 'wpshortlist', plugins_url( '/js/wpshortlist.js', __FILE__ ), array( 'jquery' ), '1.0', true );
 
-	$current = wpshortlist_get_current_query_type();
-	$data    = array(
+	$data = array(
 		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 		'action'  => 'filter_change',
 		'nonce'   => wp_create_nonce( 'wpshortlist' ),
-		'current' => $current,
+		'start'   => $start,
+		'current' => wpshortlist_get_current_query_type(),
 	);
-	$code    = 'const wpshortlistSettings = ' . wp_json_encode( $data );
+	$code = 'const wpshortlistSettings = ' . wp_json_encode( $data );
 	wp_add_inline_script( 'wpshortlist', $code );
 }
 

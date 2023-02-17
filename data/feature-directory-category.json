@@ -4,6 +4,7 @@
 		"post_type_archive:feature_proxy",
 		"tax_archive:feature_category"
 	],
+	"start": "post_type_archive:feature_proxy",
 	"order": 100,
 	"post_types": [
 		"feature_proxy"

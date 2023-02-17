@@ -165,6 +165,8 @@ function wpshortlist_get_filter_sets_with( $filter_sets, $criterion ) {
  * Return filter sets with filters that have a specific query var.
  *
  * @param string $query_var  A query var.
+ *
+ * @return array|bool
  */
 function wpshortlist_get_filter_by_query_var( $query_var ) {
 	if ( ! $query_var ) {
@@ -177,6 +179,29 @@ function wpshortlist_get_filter_by_query_var( $query_var ) {
 			if ( $query_var === $filter['query_var'] ) {
 				return $filter;
 			}
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Return the starting page for the active filter sets.
+ * Also serves as indicator that the current page has filter sets.
+ *
+ * @todo How to make intelligent guess instead of hard-coding in config?
+ *
+ * @return string|bool
+ */
+function wpshortlist_get_start() {
+	$filter_sets = wpshortlist_get_current_filter_set();
+	if ( ! $filter_sets ) {
+		return false;
+	}
+
+	foreach ( $filter_sets as $filter_set ) {
+		if ( isset( $filter_set['start'] ) && $filter_set['start'] ) {
+			return $filter_set['start'];
 		}
 	}
 

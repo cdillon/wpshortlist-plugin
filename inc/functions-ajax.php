@@ -17,33 +17,63 @@ function wpshortlist_ajax_handler() {
 	REQUEST: Array
 	(
 		[action] => filter_change
-		[nonce] => b1963d2221
+		[nonce] => 02ac20c09c
 		[pathname] => /features/display-term-list/
+		[start] => tax_archive:feature:display-term-list
+		[current] => Array
+			(
+				[type] => tax_archive
+				[tax] => feature
+				[term] => display-term-list
+			)
+
 		[formData] => Array
 			(
 				[method-display-term-list] => Array
 					(
-						[0] => block
+						[0] => widget
 					)
+
 				[supports-display-term-list] => Array
 					(
 						[0] => tags
 					)
+
 			)
+
 	)
 	*/
 	// phpcs:enable
 
 	// Sanitize the request.
 	$request = map_deep( wp_unslash( (array) $_REQUEST ), 'sanitize_text_field' );
+	// phpcs:ignore
+	// error_log( print_r( $request, true ) );
+
+	// If form empty, return to starting page.
+	if ( ! isset( $request['formData'] ) ) {
+		$new_url = false;
+		// start is like 'tax_archive:feature:display-term-list'.
+		$start = explode( ':', $request['start'] );
+		switch ( $start[0] ) {
+			case 'post_type_archive':
+				$new_url = get_post_type_archive_link( $start[1] );
+				break;
+			case 'tax_archive':
+				$new_url = get_term_link( $start[2], $start[1] );
+				break;
+			default:
+		}
+
+		if ( ! $new_url || is_wp_error( $new_url ) ) {
+			wp_send_json_error( 'start not found' );
+		} else {
+			wp_send_json_success( $new_url );
+		}
+	}
 
 	$new_url  = home_url( $request['pathname'] );
 	$new_args = array();
-
-	// If form empty, simply return to current page.
-	if ( ! isset( $request['formData'] ) ) {
-		wp_send_json_success( $new_url );
-	}
 
 	// Get form values.
 	$search_params = (array) $request['formData'];
@@ -81,12 +111,12 @@ function wpshortlist_ajax_handler() {
 				}
 				break;
 
-			case 'tax_query_via_query_var':
+			case 'tax_query_var':
 				// Not sure yet.
 				break;
 
 			default:
-				wp_send_json_error();
+				wp_send_json_error( 'unknown filter type' );
 		}
 	}
 

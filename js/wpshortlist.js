@@ -39,12 +39,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Get the query string data.
 		const urlParams = new URLSearchParams(location.search);
 
-		// uncheck all inputs
+		// Uncheck all inputs.
 		wpshortlistForm.querySelectorAll('input').forEach((input) => {
 			input.checked = false;
 		});
 
-		// recheck post_meta inputs that match query string
+		// Recheck post_meta inputs that match query string.
 		for (const [key, value] of urlParams.entries()) {
 			let multipleValues = value.split('|');
 			for (singleValue of multipleValues) {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 		}
 
-		// recheck tax_query inputs that match initial settings
+		// Recheck tax_query inputs that match initial settings.
 		let tax   = wpshortlistSettings.current.tax;
 		let term  = wpshortlistSettings.current.term;
 		let input = wpshortlistForm.querySelector(`#${tax}-${term}`);
@@ -105,12 +105,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		event.preventDefault();
 
 		// Get URL path parts.
+		// Won't need currentUrl or pathname if we have filter_set.starting_point
 		const currentUrl = new URL(window.location.href);
 
 		let allData = {
 			'action': wpshortlistSettings.action,
 			'nonce': wpshortlistSettings.nonce,
 			'pathname': currentUrl.pathname,
+			'start': wpshortlistSettings.start,
 			'current': wpshortlistSettings.current
 		}
 
@@ -128,13 +130,15 @@ document.addEventListener("DOMContentLoaded", function () {
 				if (response.success) {
 					// console.log(response.data);
 					location.assign(response.data);
+				} else {
+					alert('request failed');
 				}
-			},
-		)
+			})
 			.done(function (msg) { console.log(msg) })
 			.fail(function (xhr, status, error) {
 				console.log(status);
 				console.log(error);
+				alert('request failed');
 			});
 	}
 
@@ -146,9 +150,11 @@ document.addEventListener("DOMContentLoaded", function () {
 	function resetForm(event) {
 		event.preventDefault();
 
-		// Simply return to base URL.
-		const currentUrl = new URL(window.location.href);
-		location.assign(`${currentUrl.origin}${currentUrl.pathname}`);
+		// Uncheck all inputs.
+		wpshortlistForm.querySelectorAll('input').forEach((input) => {
+			input.checked = false;
+		});
+		triggerChange();
 	}
 
 	// Toggle action links.

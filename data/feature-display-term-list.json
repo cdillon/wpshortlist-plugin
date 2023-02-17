@@ -3,6 +3,7 @@
 	"rules": [
 		"tax_archive:feature:display-term-list"
 	],
+	"start": "tax_archive:feature:display-term-list",
 	"order": 100,
 	"term": "display-term-list",
 	"taxonomy": "feature",
