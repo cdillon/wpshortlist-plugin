@@ -53,21 +53,3 @@ function wpshortlist_get_tax_query_var( $t ) {
 
 	return false;
 }
-
-//phpcs:disable
-/*
-function wpshortlist_get_the_title( $post_title, $post_id ) {
-	$post_type = get_post_type( $post_id );
-	if ( 'feature_proxy' === $post_type ) {
-		$post_type = 'feature';
-	}
-	if ( $post_type && in_array( $post_type, array( 'tool', 'feature' ), true ) ) {
-		$post_title = strtoupper( $post_type ) . ': ' . $post_title;
-	}
-
-	return $post_title;
-}
-
-add_filter( 'the_title', 'wpshortlist_get_the_title', 10, 2 );
-*/
-// phpcs:enable
