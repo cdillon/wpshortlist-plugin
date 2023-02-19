@@ -8,37 +8,55 @@
 /**
  * Return the current query type and values.
  *
+ * Using $wp_query instead of get_queried_object() because this is called
+ * on `pre_get_posts` before queried_object is reliable.
+ *
  * @return array
  */
 function wpshortlist_get_current_query_type() {
-	$qo = get_queried_object();
+	global $wp_query;
 
-	if ( is_home() ) {
-		return array(
-			'type' => 'blog_index',
-		);
-	}
-
-	if ( is_single() ) {
-		return array(
-			'type' => 'single',
-			'name' => $qo->post_type,
-		);
-	}
-
-	if ( is_post_type_archive() ) {
+	if ( $wp_query->is_post_type_archive() ) {
 		return array(
 			'type' => 'post_type_archive',
-			'name' => $qo->name,
+			'name' => $wp_query->query['post_type'],
 		);
 	}
 
-	if ( is_category() || is_tag() || is_tax() ) {
-		return array(
-			'type' => 'tax_archive',
-			'tax'  => $qo->taxonomy,
-			'term' => $qo->slug,
-		);
+	/*
+	 * Feature archive:
+	 * Array (
+	 *   [feature] => display-term-list
+	 * )
+	 *
+	 * With multiple filters:
+	 * Array (
+	 *   [tool-type] => plugin
+	 *   [feature] => display-term-list
+	 *   [method-display-term-list] => widget
+	 * )
+	 *
+	 * The problem: We need to identify the primary taxonomy.
+	 *
+	 * Only the last taxonomy is stored in queried_object (I think)
+	 * which may not be the primary taxonomy.
+	 *
+	 * So we need to compare a list of our primary taxonomies to the query
+	 * vars. There should be only one primary taxonomy since we are using
+	 * archive pages as starting points.
+	 */
+	if ( $wp_query->is_tax() ) {
+		$tax_names = wpshortlist_get_filter_sets_property( 'taxonomy' );
+		foreach ( $tax_names as $tax ) {
+			$tqv = wpshortlist_get_tax_query_var( $tax );
+			if ( $tqv && isset( $wp_query->query[ $tqv ] ) ) {
+				return array(
+					'type' => 'tax_archive',
+					'tax'  => $tax,
+					'term' => $wp_query->query[ $tqv ],
+				);
+			}
+		}
 	}
 
 	return false;
@@ -50,8 +68,8 @@ function wpshortlist_get_current_query_type() {
 function wpshortlist_get_current_filter_set() {
 	$params = wpshortlist_get_current_query_type();
 	// phpcs:ignore
-	//q2($params,'CURRENT QUERY TYPE');
-	return wpshortlist_get_filter_set( $params );
+	// q2($params,'CURRENT QUERY TYPE');
+	return wpshortlist_get_filter_sets( $params );
 }
 
 /**
@@ -62,7 +80,7 @@ function wpshortlist_get_current_filter_set() {
  *
  * @return array|false
  */
-function wpshortlist_get_filter_set( $params ) {
+function wpshortlist_get_filter_sets( $params ) {
 	if ( ! $params ) {
 		return false;
 	}
@@ -84,18 +102,18 @@ function wpshortlist_get_filter_set( $params ) {
 		[2] => tax_archive:feature:display-term-list
 	)
 	*/
-	$variants     = array();
-	$last_variant = '';
+	$conditions     = array();
+	$last_condition = '';
 	foreach ( $params as $param ) {
-		$variant      = ( $last_variant ? $last_variant . ':' : '' ) . $param;
-		$variants[]   = $variant;
-		$last_variant = $variant;
+		$condition      = ( $last_condition ? $last_condition . ':' : '' ) . $param;
+		$conditions[]   = $condition;
+		$last_condition = $condition;
 	}
 
 	// Match filter set rules against the current page conditions.
 	$has_rules = wpshortlist_get_filter_sets_with( $filter_sets, 'rules' );
 	foreach ( $has_rules as $filter_set ) {
-		if ( array_intersect( $variants, (array) $filter_set['rules'] ) ) {
+		if ( array_intersect( $conditions, (array) $filter_set['rules'] ) ) {
 			$active_filters[ $filter_set['order'] ] = $filter_set;
 		}
 	}
@@ -147,9 +165,11 @@ function wpshortlist_load_filter_sets() {
  * @param array  $filter_sets  Filter sets.
  * @param string $criterion    The element to check for.
  *                             For example, 'rules' or 'filters'.
+ *
+ * @return array
  */
 function wpshortlist_get_filter_sets_with( $filter_sets, $criterion ) {
-	if ( ! $filter_sets || ! $criterion ) {
+	if ( ! $filter_sets || ! is_array( $filter_sets ) || ! $criterion ) {
 		return $filter_sets;
 	}
 
@@ -163,6 +183,7 @@ function wpshortlist_get_filter_sets_with( $filter_sets, $criterion ) {
 
 /**
  * Return filter sets with filters that have a specific query var.
+ * Used by Ajax handler.
  *
  * @param string $query_var  A query var.
  *
@@ -173,8 +194,9 @@ function wpshortlist_get_filter_by_query_var( $query_var ) {
 		return false;
 	}
 
-	$filter_sets = wpshortlist_get_filter_sets_with( get_option( 'wpshortlist_filter_sets' ), 'filters' );
-	foreach ( $filter_sets as $filter_set ) {
+	$filter_sets = get_option( 'wpshortlist_filter_sets' );
+	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
+	foreach ( $has_filters as $filter_set ) {
 		foreach ( $filter_set['filters'] as $filter ) {
 			if ( $query_var === $filter['query_var'] ) {
 				return $filter;
@@ -206,4 +228,31 @@ function wpshortlist_get_start() {
 	}
 
 	return false;
+}
+
+/**
+ * Return a list of filter properties.
+ *
+ * @param string $prop  The property.
+ *
+ * @return array|bool
+ */
+function wpshortlist_get_filter_sets_property( $prop ) {
+	if ( ! $prop ) {
+		return false;
+	}
+
+	$filter_sets = get_option( 'wpshortlist_filter_sets' );
+	if ( ! $filter_sets ) {
+		return false;
+	}
+
+	$props = array();
+	foreach ( $filter_sets as $filter_set ) {
+		if ( isset( $filter_set[ $prop ] ) && $filter_set[ $prop ] ) {
+			$props[] = $filter_set[ $prop ];
+		}
+	}
+
+	return array_unique( $props );
 }

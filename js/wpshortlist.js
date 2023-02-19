@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		return false;
 	}
 
+	console.log(wpshortlistSettings);
+
 	// ---------
 	// Utilities
 	// ---------
@@ -273,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	init();
 
-	delayTimer();
+	// delayTimer();
 
 	updateActions();
 

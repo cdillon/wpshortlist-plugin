@@ -48,7 +48,7 @@ function wpshortlist_change_sort_order( $query ) {
 	$post_types = array( 'tool', 'category_proxy', 'feature_proxy' );
 	$taxonomies = array( 'feature', 'feature_category', 'tool_type' );
 
-	if ( is_post_type_archive( $post_types ) || is_tax( $taxonomies ) ) {
+	if ( $query->is_post_type_archive( $post_types ) || $query->is_tax( $taxonomies ) ) {
 		$query->set( 'orderby', 'title' );
 		$query->set( 'order', 'ASC' );
 	}
@@ -69,7 +69,7 @@ function wpshortlist_ok_modify( $query ) {
 		return false;
 	}
 
-	if ( is_admin() && ! is_main_query() ) {
+	if ( is_admin() ) {
 		return false;
 	}
 
@@ -118,8 +118,6 @@ function wpshortlist_ok_modify( $query ) {
  * Add filters to meta query.
  *
  * @param object $query  WP_Query.
- *
- * @todo Handle CPT and other CT.
  */
 function wpshortlist_alter_query( $query ) {
 	if ( ! wpshortlist_ok_modify( $query ) ) {
@@ -135,8 +133,13 @@ function wpshortlist_alter_query( $query ) {
 
 	// Iterate filter sets that have filters.
 	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
+
 	foreach ( $has_filters as $filter_set ) {
 		foreach ( $filter_set['filters'] as $filter ) {
+			// Only for filters that are configured for meta queries.
+			if ( 'post_meta' !== $filter['type'] ) {
+				continue;
+			}
 			if ( ! isset( $query->query[ $filter['query_var'] ] ) ) {
 				continue;
 			}
@@ -170,3 +173,24 @@ function wpshortlist_alter_query( $query ) {
 }
 
 add_action( 'pre_get_posts', 'wpshortlist_alter_query' );
+
+/**
+ * Debug function to log just the current query vars.
+ *
+ * @param WP_Query $q The query.
+ */
+function wpshortlist_log_query( $q ) {
+	if ( ! $q->is_main_query() ) {
+		return;
+	}
+	if ( isset( $q->query['favicon'] ) ) {
+		return;
+	}
+	if ( isset( $q->query['post_type'] ) && in_array( $q->query['post_type'], array( 'nav_menu_item', 'wp_template', 'wp_template_part' ), true ) ) {
+		return;
+	}
+
+	q2( $q->query, 'QUERY', '-', 'query.log' );
+}
+
+add_action( 'pre_get_posts', 'wpshortlist_log_query', 999 );

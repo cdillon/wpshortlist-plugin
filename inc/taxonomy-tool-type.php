@@ -40,9 +40,9 @@ function wpshortlist_register_taxonomy__tool_type() {
 
 	$args = array(
 		'labels'                => $labels,
-		'public'                => false,
-		'publicly_queryable'    => false,
-		'show_in_nav_menus'     => true,
+		'public'                => true,
+		'publicly_queryable'    => true,
+		'show_in_nav_menus'     => false,
 		'show_ui'               => true,
 		'show_tagcloud'         => false,
 		'show_in_quick_edit'    => true,
@@ -50,13 +50,20 @@ function wpshortlist_register_taxonomy__tool_type() {
 		'show_admin_column'     => true,
 		'hierarchical'          => true,
 
+		// 'rewrite'               => array(
+			// 'slug'       => 'tool-type',
+			// 'with_front' => true,
+		// ),
 		'rewrite'               => false,
-		'query_var'             => true,
+		'query_var'             => 'tool-type',
 
 		'show_in_rest'          => true,
 		'rest_base'             => 'tool_type',
 		'rest_controller_class' => 'WP_REST_Terms_Controller',
 		'rest_namespace'        => 'wp/v2',
+
+		// Custom properties.
+		// 'path'                  => 'tool-type',
 	);
 
 	register_taxonomy( 'tool_type', array( 'tool' ), $args );

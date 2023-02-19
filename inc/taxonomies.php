@@ -10,7 +10,7 @@
  */
 require_once plugin_dir_path( __FILE__ ) . 'taxonomy-feature-category.php';
 require_once plugin_dir_path( __FILE__ ) . 'taxonomy-tool-type.php';
-require_once plugin_dir_path( __FILE__ ) . 'taxonomy-wp-feature.php';
+require_once plugin_dir_path( __FILE__ ) . 'taxonomy-feature.php';
 require_once plugin_dir_path( __FILE__ ) . 'taxonomy-compatibility.php';
 require_once plugin_dir_path( __FILE__ ) . 'taxonomy-workflow.php';
 

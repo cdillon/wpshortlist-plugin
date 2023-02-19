@@ -44,7 +44,7 @@ function wpshortlist_register_taxonomy__feature_category() {
 		'publicly_queryable'    => true,  // Required if using proxy.
 		'show_in_nav_menus'     => false,  // Use proxy instead.
 		'show_ui'               => true,
-		'show_tagcloud'         => true,
+		'show_tagcloud'         => false,
 		'show_in_quick_edit'    => true,
 		'show_in_menu'          => true,
 		'show_admin_column'     => true,

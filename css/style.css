@@ -32,6 +32,11 @@ filter list
 	padding-left: 0.2em;
 }
 
+.wpshortlist-filter input,
+.wpshortlist-filter label {
+	cursor: pointer;
+}
+
 .wpshortlist-filter fieldset {
 	padding: 0;
 	margin: 0;
@@ -43,8 +48,10 @@ filter list
 	font-style: italic;
 }
 
+/* Overlap the input to avoid seeing text cursor on whitespace between them. */
 .wpshortlist-filter-list-item label {
-	padding-left: 0.3em;
+	padding-left: 0.5em;
+	margin-left: -0.3em;
 }
 
 /*
@@ -90,7 +97,6 @@ static height.
 
 .filter-action:not(:first-child):before {
 	content: "\2022";
-	/* color: #032075; */
 	opacity: 0.3;
 	/* Right side already has 0.25em due to HTML line break. */
 	padding: 0 0.25em 0 0.5em;

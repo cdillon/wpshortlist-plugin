@@ -6,6 +6,7 @@
 	],
 	"start": "post_type_archive:feature_proxy",
 	"order": 100,
+	"taxonomy": "feature_category",
 	"post_types": [
 		"feature_proxy"
 	],
@@ -13,8 +14,8 @@
 		{
 			"name": "Feature Category",
 			"id": "feature-category",
-			"type": "tax_query",
-			"query_var": "feature_category",
+			"type": "tax",
+			"query_var": "feature-category",
 			"input_type": "radio",
 			"relation": "OR",
 			"options": {

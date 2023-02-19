@@ -60,7 +60,11 @@ function wpshortlist_ajax_handler() {
 				$new_url = get_post_type_archive_link( $start[1] );
 				break;
 			case 'tax_archive':
-				$new_url = get_term_link( $start[2], $start[1] );
+				if ( isset( $start[2] ) ) {
+					$new_url = get_term_link( $start[2], $start[1] );
+				} else {
+					$new_url = home_url( $request['pathname'] );
+				}
 				break;
 			default:
 		}
@@ -83,19 +87,22 @@ function wpshortlist_ajax_handler() {
 
 		// Find the filter for each query_var.
 		$filter = wpshortlist_get_filter_by_query_var( $s_arg );
+		// phpcs:ignore
+		// error_log('FILTER = ' . print_r($filter,true));
 
 		if ( ! $filter ) {
 			// @todo How to fail gracefully here?
-			wp_send_json_error( 'filter for ' . $s_arg . ' not found' );
+			wp_send_json_error( array( 'filter not found', $s_arg ) );
 		}
 
 		switch ( $filter['type'] ) {
 
-			case 'tax_query':
+			case 'tax':
 				// Get the pretty tax_archive URL. There can be only one.
-				$archive = get_term_link( $s_values[0], $s_arg );
+				$tax     = wpshortlist_get_tax_by_query_var( $s_arg );
+				$archive = get_term_link( $s_values[0], $tax );
 				if ( is_wp_error( $archive ) ) {
-					wp_send_json_error( 'term archive link not found' );
+					wp_send_json_error( array( 'term archive link not found', $s_arg, $s_values[0] ) );
 				} else {
 					$new_url = $archive;
 				}
@@ -112,7 +119,10 @@ function wpshortlist_ajax_handler() {
 				break;
 
 			case 'tax_query_var':
-				// Not sure yet.
+				$tax = wpshortlist_get_tax_by_query_var( $s_arg );
+				foreach ( $s_values as $arg_value ) {
+					$new_args[ $s_arg ][] = $arg_value;
+				}
 				break;
 
 			default:

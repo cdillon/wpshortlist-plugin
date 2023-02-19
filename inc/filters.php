@@ -59,11 +59,17 @@ function wpshortlist_print_filter_list( $filter ) {
 			$checked = in_array( $option_id, explode( '|', $q_value ), true );
 		}
 
-		// Taxonomy and terms are available through `$current_query`.
+		// Primary taxonomy (using rewrites) are available through `$current_query`.
 		// Must check if we are on a tax archive because the filter may be
 		// present on post type archives too.
-		if ( 'tax_query' === $filter['type'] && 'tax_archive' === $current_query['type'] ) {
+		if ( 'tax' === $filter['type'] && 'tax_archive' === $current_query['type'] ) {
 			$checked = $option_id === $current_query['term'];
+		}
+
+		// Secondary taxonomies are query string parameters like post meta above.
+		if ( 'tax_query_var' === $filter['type'] ) {
+			$q_value = get_query_var( $filter['query_var'] );
+			$checked = in_array( $option_id, explode( '|', $q_value ), true );
 		}
 
 		$args = array(
