@@ -213,7 +213,7 @@ function wpshortlist_get_filter_by_query_var( $query_var ) {
  *
  * @todo How to make intelligent guess instead of hard-coding in config?
  *
- * @return string|bool
+ * @return string
  */
 function wpshortlist_get_start() {
 	$filter_sets = wpshortlist_get_current_filter_set();
@@ -221,13 +221,15 @@ function wpshortlist_get_start() {
 		return false;
 	}
 
+	// Progressive assignment: The last 'start' wins.
+	$start = '';
 	foreach ( $filter_sets as $filter_set ) {
 		if ( isset( $filter_set['start'] ) && $filter_set['start'] ) {
-			return $filter_set['start'];
+			$start = $filter_set['start'];
 		}
 	}
 
-	return false;
+	return $start;
 }
 
 /**

@@ -3,6 +3,7 @@
 	"rules": [
 		"tax_archive:feature"
 	],
+	"start": "tax_archive:feature",
 	"order": 50,
 	"post_types": [
 		"tool"
