@@ -1,18 +1,20 @@
 {
 	"name": "Tool Type",
 	"rules": [
-		"tax_archive:feature"
+		"post_type_archive:tool",
+		"tax_archive:tool_type"
 	],
-	"start": "tax_archive:feature",
+	"taxonomy": "tool_type",
+	"start": "post_type_archive:tool",
 	"order": 50,
 	"post_types": [
 		"tool"
 	],
 	"filters": [
 		{
-			"name": "Type",
+			"name": "Tool Type",
 			"id": "tool-type",
-			"type": "tax_query_var",
+			"type": "tax",
 			"query_var": "tool-type",
 			"input_type": "radio",
 			"relation": "OR",

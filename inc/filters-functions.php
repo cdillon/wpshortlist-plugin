@@ -92,23 +92,7 @@ function wpshortlist_get_filter_sets( $params ) {
 
 	$active_filters = array();
 
-	// phpcs:ignore
-	/*
-	Build an array of current page conditions like:
-	Array
-	(
-		[0] => tax_archive
-		[1] => tax_archive:feature
-		[2] => tax_archive:feature:display-term-list
-	)
-	*/
-	$conditions     = array();
-	$last_condition = '';
-	foreach ( $params as $param ) {
-		$condition      = ( $last_condition ? $last_condition . ':' : '' ) . $param;
-		$conditions[]   = $condition;
-		$last_condition = $condition;
-	}
+	$conditions = wpshortlist_get_conditions( $params );
 
 	// Match filter set rules against the current page conditions.
 	$has_rules = wpshortlist_get_filter_sets_with( $filter_sets, 'rules' );
@@ -123,6 +107,30 @@ function wpshortlist_get_filter_sets( $params ) {
 	// q2( $active_filters, 'ACTIVE FILTERS' );
 	return $active_filters;
 }
+
+/**
+ * Build an array of current page conditions like:
+ * Array
+ * (
+ *     [0] => tax_archive
+ *     [1] => tax_archive:feature
+ *     [2] => tax_archive:feature:display-term-list
+ * )
+ *
+ * @param array $params The current query type.
+ */
+function wpshortlist_get_conditions( $params ) {
+	$conditions     = array();
+	$last_condition = '';
+	foreach ( $params as $param ) {
+		$condition      = ( $last_condition ? $last_condition . ':' : '' ) . $param;
+		$conditions[]   = $condition;
+		$last_condition = $condition;
+	}
+
+	return $conditions;
+}
+
 
 /**
  * Load filter sets. Called from plugin activation function.
@@ -179,32 +187,6 @@ function wpshortlist_get_filter_sets_with( $filter_sets, $criterion ) {
 			return ( isset( $f[ $criterion ] ) && $f[ $criterion ] );
 		}
 	);
-}
-
-/**
- * Return filter sets with filters that have a specific query var.
- * Used by Ajax handler.
- *
- * @param string $query_var  A query var.
- *
- * @return array|bool
- */
-function wpshortlist_get_filter_by_query_var( $query_var ) {
-	if ( ! $query_var ) {
-		return false;
-	}
-
-	$filter_sets = get_option( 'wpshortlist_filter_sets' );
-	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
-	foreach ( $has_filters as $filter_set ) {
-		foreach ( $filter_set['filters'] as $filter ) {
-			if ( $query_var === $filter['query_var'] ) {
-				return $filter;
-			}
-		}
-	}
-
-	return false;
 }
 
 /**

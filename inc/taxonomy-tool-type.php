@@ -50,11 +50,10 @@ function wpshortlist_register_taxonomy__tool_type() {
 		'show_admin_column'     => true,
 		'hierarchical'          => true,
 
-		// 'rewrite'               => array(
-			// 'slug'       => 'tool-type',
-			// 'with_front' => true,
-		// ),
-		'rewrite'               => false,
+		'rewrite'               => array(
+			'slug'       => 'tool-type',
+			'with_front' => true,
+		),
 		'query_var'             => 'tool-type',
 
 		'show_in_rest'          => true,
@@ -63,7 +62,7 @@ function wpshortlist_register_taxonomy__tool_type() {
 		'rest_namespace'        => 'wp/v2',
 
 		// Custom properties.
-		// 'path'                  => 'tool-type',
+		'path'                  => 'tool-type',
 	);
 
 	register_taxonomy( 'tool_type', array( 'tool' ), $args );

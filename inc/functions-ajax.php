@@ -76,57 +76,55 @@ function wpshortlist_ajax_handler() {
 		}
 	}
 
+	// Form is not empty so process the form values.
 	$new_url  = home_url( $request['pathname'] );
 	$new_args = array();
 
 	// Get form values.
 	$search_params = (array) $request['formData'];
 
+	$filter_sets = wpshortlist_get_filter_sets( $request['current'] );
+	$has_filters = wpshortlist_get_filter_sets_with( $filter_sets, 'filters' );
+
 	// Iterate search arguments.
 	foreach ( $search_params as $s_arg => $s_values ) {
+		foreach ( $has_filters as $filter_set ) {
+			foreach ( $filter_set['filters'] as $filter ) {
 
-		// Find the filter for each query_var.
-		$filter = wpshortlist_get_filter_by_query_var( $s_arg );
-		// phpcs:ignore
-		// error_log('FILTER = ' . print_r($filter,true));
+				switch ( $filter['type'] ) {
 
-		if ( ! $filter ) {
-			// @todo How to fail gracefully here?
-			wp_send_json_error( array( 'filter not found', $s_arg ) );
-		}
+					case 'tax':
+						// Get the pretty tax_archive URL. There can be only one.
+						$tax     = wpshortlist_get_tax_by_query_var( $s_arg );
+						$archive = get_term_link( $s_values[0], $tax );
+						if ( is_wp_error( $archive ) ) {
+							wp_send_json_error( array( 'term archive link not found', $s_arg, $s_values[0] ) );
+						} else {
+							$new_url = $archive;
+						}
+						break;
 
-		switch ( $filter['type'] ) {
+					case 'post_meta':
+						// Assemble the search arguments.
+						$option_names = array_keys( $filter['options'] );
+						foreach ( $s_values as $arg_value ) {
+							if ( in_array( $arg_value, $option_names, true ) ) {
+								$new_args[ $s_arg ][] = $arg_value;
+							}
+						}
+						break;
 
-			case 'tax':
-				// Get the pretty tax_archive URL. There can be only one.
-				$tax     = wpshortlist_get_tax_by_query_var( $s_arg );
-				$archive = get_term_link( $s_values[0], $tax );
-				if ( is_wp_error( $archive ) ) {
-					wp_send_json_error( array( 'term archive link not found', $s_arg, $s_values[0] ) );
-				} else {
-					$new_url = $archive;
+					case 'tax_query_var':
+						// Assemble the search arguments.
+						foreach ( $s_values as $arg_value ) {
+							$new_args[ $s_arg ][] = $arg_value;
+						}
+						break;
+
+					default:
+						wp_send_json_error( 'unknown filter type' );
 				}
-				break;
-
-			case 'post_meta':
-				// Assemble the search arguments.
-				$option_names = array_keys( $filter['options'] );
-				foreach ( $s_values as $arg_value ) {
-					if ( in_array( $arg_value, $option_names, true ) ) {
-						$new_args[ $s_arg ][] = $arg_value;
-					}
-				}
-				break;
-
-			case 'tax_query_var':
-				$tax = wpshortlist_get_tax_by_query_var( $s_arg );
-				foreach ( $s_values as $arg_value ) {
-					$new_args[ $s_arg ][] = $arg_value;
-				}
-				break;
-
-			default:
-				wp_send_json_error( 'unknown filter type' );
+			}
 		}
 	}
 

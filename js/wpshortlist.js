@@ -62,7 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		if ( input !== null ) {
 			input.checked = true;
 		}
-
 	}
 
 	// Set a timer for the Back-button hack.
@@ -96,7 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			default:
 		}
-
 	}
 
 	// Submit the form via Ajax and redirect.

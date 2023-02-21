@@ -81,6 +81,7 @@ function wpshortlist_enqueue_scripts() {
 		'action'  => 'filter_change',
 		'nonce'   => wp_create_nonce( 'wpshortlist' ),
 		'start'   => $start,
+		// @todo Should this be the imploded string instead?
 		'current' => wpshortlist_get_current_query_type(),
 	);
 	$code = 'const wpshortlistSettings = ' . wp_json_encode( $data );
