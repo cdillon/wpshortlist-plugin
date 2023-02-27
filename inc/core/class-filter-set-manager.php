@@ -22,9 +22,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Filter_Set_Manager {
 
 	/**
-	 * Check
+	 * Init
 	 */
-	public function check() {
+	public function init() {
 		if ( ! get_option( 'wpshortlist_filter_sets' ) ) {
 			$this->build();
 		}

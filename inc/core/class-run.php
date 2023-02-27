@@ -35,10 +35,10 @@ class Run {
 		$q->init();
 
 		$filter_set_manager = new Filter_Set_Manager();
-		$filter_set_manager->check();
+		$filter_set_manager->init();
 
 		$widgets = new Widget_Manager();
-		$widgets->load();
+		$widgets->init();
 
 		$asset_manager = new Asset_Manager();
 		$asset_manager->init();

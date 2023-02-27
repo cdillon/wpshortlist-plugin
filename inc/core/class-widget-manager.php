@@ -22,17 +22,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Widget_Manager {
 
 	/**
+	 * Init
+	 */
+	public function init() {
+		add_action( 'widgets_init', array( $this, 'register' ) );
+	}
+
+	/**
 	 * Register
 	 */
 	public function register() {
 		register_widget( 'Shortlist\Core\Filters_Widget' );
-	}
-
-	/**
-	 * Load
-	 */
-	public function load() {
-		add_action( 'widgets_init', array( $this, 'register' ) );
 	}
 
 }
