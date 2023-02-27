@@ -22,12 +22,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Ajax {
 
 	/**
-	 * Constructor
-	 */
-	public function __construct() {
-	}
-
-	/**
 	 * Init
 	 */
 	public function init() {
