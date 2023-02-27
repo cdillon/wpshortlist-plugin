@@ -36,12 +36,6 @@ class Filter_Sets {
 	}
 
 	/**
-	 * Init
-	 */
-	public function init() {
-	}
-
-	/**
 	 * Return the filter set for the current page.
 	 */
 	public function get_current_filter_set() {
