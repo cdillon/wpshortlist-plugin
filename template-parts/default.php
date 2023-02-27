@@ -31,13 +31,13 @@ HTML Structure:
 
 	<div class="form-actions">
 		<div class="form-action action-reset">
-			<?php wpshortlist_print_filter_reset_all(); ?>
+			<?php $this->print_filter_reset_all(); ?>
 		</div>
 	</div>
 
-	<?php foreach ( $filter_sets as $filter_set ) : ?>
+	<?php foreach ( $this->current as $filter_set ) : ?>
 	<div class="wpshortlist-filterset">
-		<?php wpshortlist_print_filter_set_content( $filter_set ); ?>
+		<?php $this->print_filter_set_content( $filter_set ); ?>
 		<?php if ( isset( $filter_set['filters'] ) ) : ?>
 			<?php foreach ( $filter_set['filters'] as $filter ) : ?>
 				<div class="wpshortlist-filter"
@@ -48,12 +48,12 @@ HTML Structure:
 							<h3 class="wpshortlist-filter-heading">
 								<?php echo esc_html( $filter['name'] ); ?>
 							</h3>
-							<?php wpshortlist_print_explainer( $filter ); ?>
+							<?php $this->print_explainer( $filter ); ?>
 						</legend>
 						<div class="filter-actions">
-							<?php wpshortlist_print_filter_actions( $filter ); ?>
+							<?php $this->print_filter_actions( $filter ); ?>
 						</div>
-						<?php wpshortlist_print_filter_list( $filter ); ?>
+						<?php $this->print_filter_list( $filter ); ?>
 					</fieldset>
 				</div><!-- .wpshortlist-filter -->
 			<?php endforeach; ?>

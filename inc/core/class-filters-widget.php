@@ -1,18 +1,20 @@
 <?php
 /**
- *  Filters Widget
+ * Filters Widget
  *
  * @package wpshortlist
  */
 
+namespace Shortlist\Core;
+
 /**
- * Class WPShortlist_Filters_Widget
+ * Class Filters_Widget
  *
  * @since 1.0
  *
  * @see WP_Widget
  */
-class WPShortlist_Filters_Widget extends WP_Widget {
+class Filters_Widget extends \WP_Widget {
 
 	/**
 	 * Constructor.
@@ -35,7 +37,9 @@ class WPShortlist_Filters_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		// Only load if the current page has a filter set.
-		if ( ! wpshortlist_get_current_filter_set() ) {
+		$filter_sets = new Filter_Sets();
+		$current     = $filter_sets->get_current_filter_set();
+		if ( ! $current ) {
 			return;
 		}
 
@@ -49,8 +53,8 @@ class WPShortlist_Filters_Widget extends WP_Widget {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
 
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo wpshortlist_filters();
+		$render = new Render( $current );
+		$render->print_filters();
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $args['after_widget'];
