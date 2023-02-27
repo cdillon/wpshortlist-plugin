@@ -37,8 +37,7 @@ class Asset_Manager {
 			return;
 		}
 
-		$query_type    = new Query_Type();
-		$current_query = $query_type->get_current_query_type();
+		$current_query = get_current_query_type();
 
 		// @todo Use plugin's version number.
 		wp_enqueue_style( 'wpshortlist', WPSHORTLIST_URL . '/css/style.css', array(), '1.0', 'all' );

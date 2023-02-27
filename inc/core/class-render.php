@@ -57,8 +57,7 @@ class Render {
 	 * @return void
 	 */
 	public function print_filter_list( $filter ) {
-		$query_type    = new Query_Type();
-		$current_query = $query_type->get_current_query_type();
+		$current_query = get_current_query_type();
 		?>
 		<ul class="wpshortlist-filter-list">
 		<?php

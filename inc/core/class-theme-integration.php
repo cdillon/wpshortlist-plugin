@@ -39,8 +39,7 @@ class Theme_Integration {
 	 */
 	public function archive_title( $title, $original_title, $prefix ) {
 		// Find the primary tax.
-		$query_type    = new Query_Type();
-		$current_query = $query_type->get_current_query_type();
+		$current_query = get_current_query_type();
 
 		if ( is_post_type_archive() ) {
 			$title  = post_type_archive_title( '', false );

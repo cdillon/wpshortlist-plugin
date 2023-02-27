@@ -45,10 +45,7 @@ class Filter_Sets {
 	 * Return the filter set for the current page.
 	 */
 	public function get_current_filter_set() {
-		$query_type    = new Query_Type();
-		$current_query = $query_type->get_current_query_type();
-
-		return $this->get_filter_sets( $current_query );
+		return $this->get_filter_sets( get_current_query_type() );
 	}
 
 	/**

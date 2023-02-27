@@ -21,10 +21,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Constants.
+ */
 define( 'WPSHORTLIST_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPSHORTLIST_URL', plugin_dir_url( __FILE__ ) );
 define( 'WPSHORTLIST_DATA_DIR', plugin_dir_path( __FILE__ ) . 'data/' );
 define( 'WPSHORTLIST_TPL_DIR', plugin_dir_path( __FILE__ ) . 'template-parts/' );
+
+/**
+ * Functions.
+ */
+require_once WPSHORTLIST_DIR . 'inc/core/functions.php';
 
 /**
  * Autoloader.
