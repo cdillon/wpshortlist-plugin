@@ -24,15 +24,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Constants.
  */
-define( 'WPSHORTLIST_DIR', plugin_dir_path( __FILE__ ) );
-define( 'WPSHORTLIST_URL', plugin_dir_url( __FILE__ ) );
+define( 'WPSHORTLIST_INC', plugin_dir_path( __FILE__ ) . 'inc/' );
 define( 'WPSHORTLIST_DATA_DIR', plugin_dir_path( __FILE__ ) . 'data/' );
 define( 'WPSHORTLIST_TPL_DIR', plugin_dir_path( __FILE__ ) . 'template-parts/' );
+define( 'WPSHORTLIST_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * Functions.
  */
-require_once WPSHORTLIST_DIR . 'inc/core/functions.php';
+require_once WPSHORTLIST_INC . 'core/functions.php';
 
 /**
  * Autoloader.
@@ -45,9 +45,6 @@ function wpshortlist_autoloader( $class_name ) {
 	$namespace = 'Shortlist';
 
 	if ( 0 === strpos( $class_name, $namespace ) ) {
-		// Get our source directory.
-		$classes_dir = realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR;
-
 		// Remove namespace and trailing slash from class name.
 		$class_name = str_replace( $namespace . DIRECTORY_SEPARATOR, '', $class_name );
 
@@ -67,7 +64,7 @@ function wpshortlist_autoloader( $class_name ) {
 		$class_file = implode( DIRECTORY_SEPARATOR, $class_parts );
 
 		// Assemble absolute path and verify existence.
-		$path = $classes_dir . $class_file;
+		$path = WPSHORTLIST_INC . $class_file;
 		if ( file_exists( $path ) ) {
 			require_once $path;
 		}
