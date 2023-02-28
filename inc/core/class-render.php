@@ -39,10 +39,6 @@ class Render {
 
 	/**
 	 * Print our filters. Called by widget.
-	 *
-	 * @todo Convert to class.
-	 * @todo Use DI to send filters from widget class.
-	 * @todo How to decouple? Mediator pattern?
 	 */
 	public function print_filters() {
 		// Load default template.
@@ -57,38 +53,15 @@ class Render {
 	 * @return void
 	 */
 	public function print_filter_list( $filter ) {
-		$current_query = get_current_query_type();
 		?>
 		<ul class="wpshortlist-filter-list">
 		<?php
-		foreach ( $filter['options'] as $option_id => $option_name ) :
-			$checked = false;
+		foreach ( $filter['options'] as $option_id => $option_name ) {
 
 			// Build a unique ID like 'supports-display-term-list-tags'.
 			$input_id = $filter['query_var'] . '-' . $option_id;
 
-			// @todo Convert these to a switch?
-
-			// Post meta are query string parameters (a.k.a. search args)
-			// and are available through `get_query_var()`.
-			// May be present on tax archives or post type archives.
-			if ( 'post_meta' === $filter['type'] ) {
-				$q_value = get_query_var( $filter['query_var'] );
-				$checked = in_array( $option_id, explode( '|', $q_value ), true );
-			}
-
-			// Primary taxonomy (using rewrites) are available through `$current_query`.
-			// Must check if we are on a tax archive because the filter may be
-			// present on post type archives too.
-			if ( 'tax' === $filter['type'] && 'tax_archive' === $current_query['type'] ) {
-				$checked = $option_id === $current_query['term'];
-			}
-
-			// Secondary taxonomies are query string parameters like post meta above.
-			if ( 'tax_query_var' === $filter['type'] ) {
-				$q_value = get_query_var( $filter['query_var'] );
-				$checked = in_array( $option_id, explode( '|', $q_value ), true );
-			}
+			$checked = $this->get_checked( $option_id, $filter );
 
 			$args = array(
 				'type'    => $filter['input_type'],
@@ -99,12 +72,52 @@ class Render {
 				'label'   => $option_name,
 				'checked' => $checked,
 			);
-			$this->filter_list_item( $args );
-			?>
-
-		<?php endforeach; ?>
+			$this->print_filter_list_item( $args );
+		}
+		?>
 		</ul>
 		<?php
+	}
+
+	/**
+	 * Return the input's `checked` value.
+	 *
+	 * @param string $option_id The option id.
+	 * @param array  $filter    The filter.
+	 *
+	 * @return bool
+	 */
+	private function get_checked( $option_id, $filter ) {
+		switch ( $filter['type'] ) {
+			case 'tax':
+				// Primary taxonomy (using rewrites) are available through $current_query.
+				// Must check if we are on a tax archive because the filter may be
+				// present on post type archives too.
+				$current_query = get_current_query_type();
+				if ( 'tax_archive' === $current_query['type'] ) {
+					$checked = $option_id === $current_query['term'];
+				}
+				break;
+
+			case 'post_meta':
+				// Post meta are query string parameters (a.k.a. search args)
+				// and are available through `get_query_var()`.
+				// May be present on tax archives or post type archives.
+				$q_value = get_query_var( $filter['query_var'] );
+				$checked = in_array( $option_id, explode( '|', $q_value ), true );
+				break;
+
+			case 'tax_query_var':
+				// Secondary taxonomies are query string parameters (like post meta).
+				$q_value = get_query_var( $filter['query_var'] );
+				$checked = in_array( $option_id, explode( '|', $q_value ), true );
+				break;
+
+			default:
+				$checked = false;
+		}
+
+		return $checked;
 	}
 
 	/**
@@ -116,7 +129,7 @@ class Render {
 	 *
 	 * @return void
 	 */
-	public function filter_list_item( $args ) {
+	public function print_filter_list_item( $args ) {
 		?>
 		<li class="wpshortlist-filter-list-item">
 			<input type="<?php echo esc_attr( $args['type'] ); ?>"

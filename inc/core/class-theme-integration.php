@@ -38,13 +38,15 @@ class Theme_Integration {
 	 * @return string
 	 */
 	public function archive_title( $title, $original_title, $prefix ) {
-		// Find the primary tax.
-		$current_query = get_current_query_type();
-
 		if ( is_post_type_archive() ) {
+
 			$title  = post_type_archive_title( '', false );
 			$prefix = '';
+
 		} elseif ( is_tax() ) {
+
+			// Find the primary tax.
+			$current_query = get_current_query_type();
 			if ( $current_query ) {
 				$tax    = get_taxonomy( $current_query['tax'] );
 				$term   = get_term_by( 'slug', $current_query['term'], $current_query['tax'] );

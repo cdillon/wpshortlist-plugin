@@ -52,19 +52,25 @@ class Filter_Set_Manager {
 			$json = $wpfsd->get_contents( WPSHORTLIST_DATA_DIR . $file );
 
 			if ( $json ) {
-				// Save new filter set.
 				$filter_set = json_decode( $json, true );
 				if ( is_null( $filter_set ) ) {
 					q2( $file, 'Error: invalid JSON' );
 				} else {
+					// Save filter set.
 					$filter_sets[] = $filter_set;
-					$taxonomies[]  = $filter_set['taxonomy'];
+
+					// Store taxonomy info.
+					$taxonomy = get_taxonomy( $filter_set['taxonomy'] );
+					if ( $taxonomy ) {
+						$taxonomies [ $taxonomy->query_var ] = $filter_set['taxonomy'];
+					}
 				}
 			}
 		}
 
 		q2( $filter_sets, '', 'o', 'filter-sets.log' );
 		update_option( 'wpshortlist_filter_sets', $filter_sets );
+		q2( $taxonomies, '', 'o', 'taxonomies.log' );
 		update_option( 'wpshortlist_taxonomies', $taxonomies );
 	}
 

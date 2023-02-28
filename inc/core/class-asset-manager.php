@@ -37,8 +37,6 @@ class Asset_Manager {
 			return;
 		}
 
-		$current_query = get_current_query_type();
-
 		// @todo Use plugin's version number.
 		wp_enqueue_style( 'wpshortlist', WPSHORTLIST_URL . '/css/style.css', array(), '1.0', 'all' );
 		wp_enqueue_script( 'wpshortlist', WPSHORTLIST_URL . '/js/wpshortlist.js', array( 'jquery' ), '1.0', true );
@@ -49,7 +47,7 @@ class Asset_Manager {
 			'nonce'   => wp_create_nonce( 'wpshortlist' ),
 			'start'   => $start,
 			// @todo Should this be the imploded string instead?
-			'current' => $current_query,
+			'current' => get_current_query_type(),
 		);
 		$code = 'const wpshortlistSettings = ' . wp_json_encode( $data );
 		wp_add_inline_script( 'wpshortlist', $code );

@@ -14,13 +14,35 @@ namespace Shortlist\Core;
  *
  * Using $wp_query functions because this is called on `pre_get_posts`.
  *
- * @todo Can this info be stored in $wp_query after parse_request so we don't have to assemble it every time?
+ * ---
+ * The problem: We need to identify the primary taxonomy.
+ * ---
  *
- * @return array
+ * Feature archive:
+ * Query = Array (
+ *   [feature] => display-term-list   <--- primary
+ * )
+ *
+ * With multiple filters:
+ * Query = Array (
+ *   [tool-type] => plugin                  <--- secondary
+ *   [feature] => display-term-list         <--- primary
+ *   [method-display-term-list] => widget   <--- post meta
+ * )
+ *
+ * WordPress is designed for displaying one taxonomy at a time.
+ *
+ * Only the last taxonomy is stored in queried_object which may not be
+ * the primary taxonomy.
+ *
+ * So we need to compare a list of our primary taxonomies to the query
+ * vars. There should be only one primary taxonomy since we are using
+ * archive pages as starting points.
  */
 function get_current_query_type() {
 	global $wp_query;
 
+	// Post type archives are simple.
 	if ( $wp_query->is_post_type_archive() ) {
 		return array(
 			'type' => 'post_type_archive',
@@ -28,59 +50,18 @@ function get_current_query_type() {
 		);
 	}
 
-	/*
-	 * The problem: We need to identify the primary taxonomy.
-	 *
-	 * Feature archive:
-	 * Array (
-	 *   [feature] => display-term-list
-	 * )
-	 *
-	 * With multiple filters:
-	 * Array (
-	 *   [tool-type] => plugin
-	 *   [feature] => display-term-list
-	 *   [method-display-term-list] => widget
-	 * )
-	 *
-	 * Only the last taxonomy is stored in queried_object which may not be
-	 * the primary taxonomy.
-	 *
-	 * So we need to compare a list of our primary taxonomies to the query
-	 * vars. There should be only one primary taxonomy since we are using
-	 * archive pages as starting points.
-	 */
+	// Find the primary taxonomy.
 	if ( $wp_query->is_tax() ) {
-		// @todo Find a way to store all the info we need in one place: our taxos and their query vars.
 		$taxonomies = get_option( 'wpshortlist_taxonomies', array() );
-		foreach ( $taxonomies as $tax_name ) {
-			$tqv = get_tax_query_var( $tax_name );
-			if ( $tqv && isset( $wp_query->query[ $tqv ] ) ) {
+		foreach ( $taxonomies as $tax_query_var => $tax_name ) {
+			if ( isset( $wp_query->query[ $tax_query_var ] ) ) {
 				return array(
 					'type' => 'tax_archive',
 					'tax'  => $tax_name,
-					'term' => $wp_query->query[ $tqv ],
+					'term' => $wp_query->query[ $tax_query_var ],
 				);
 			}
 		}
-	}
-
-	return false;
-}
-
-/**
- * Return the query var of a taxonomy.
- *
- * @param string $tax_name The taxonomy name.
- */
-function get_tax_query_var( $tax_name ) {
-	if ( ! $tax_name ) {
-		return false;
-	}
-
-	$taxonomy = get_taxonomy( $tax_name );
-	if ( $taxonomy ) {
-		return $taxonomy->query_var;
 	}
 
 	return false;
