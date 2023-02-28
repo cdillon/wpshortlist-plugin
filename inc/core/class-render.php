@@ -88,6 +88,8 @@ class Render {
 	 * @return bool
 	 */
 	private function get_checked( $option_id, $filter ) {
+		$checked = false;
+
 		switch ( $filter['type'] ) {
 			case 'tax':
 				// Primary taxonomy (using rewrites) are available through $current_query.
