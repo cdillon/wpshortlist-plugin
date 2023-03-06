@@ -32,7 +32,7 @@ class Breadcrumbs {
 	 * Print
 	 */
 	public function print_breadcrumbs() {
-		if ( is_home() || is_front_page() ) {
+		if ( is_home() || is_front_page() || is_singular( array( 'post', 'page' ) ) ) {
 			return;
 		}
 
