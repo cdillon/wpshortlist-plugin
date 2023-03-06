@@ -67,3 +67,29 @@ function get_current_query_type() {
 	// @todo If single, this should return post type info.
 	return false;
 }
+
+/**
+ * Return the current post's primary label.
+ *
+ * For tools, that's its tool type.
+ * For features, that's its target name.
+ */
+function get_post_type_primary_label() {
+	$label = '';
+	$post  = get_post();
+	$type  = get_post_type( $post );
+
+	switch ( $type ) {
+		case 'tool':
+			$terms = wp_get_post_terms( get_the_ID(), 'tool_type' );
+			if ( ! is_wp_error( $terms ) ) {
+				$label = $terms[0]->name;
+			}
+			break;
+		case 'feature_proxy':
+			$label = 'Feature';
+			break;
+	}
+
+	return $label;
+}

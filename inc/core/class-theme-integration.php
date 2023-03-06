@@ -26,6 +26,26 @@ class Theme_Integration {
 	 */
 	public function init() {
 		add_filter( 'get_the_archive_title', array( $this, 'archive_title' ), 20, 3 );
+
+		add_action( 'kadence_loop_entry_header', array( $this, 'loop_entry_type' ) );
+		add_action( 'kadence_entry_header', array( $this, 'loop_entry_type' ) );
+	}
+
+	/**
+	 * Loop entry type
+	 */
+	public function loop_entry_type() {
+		// @todo Replace this logic with a common function.
+		if ( ! ( is_post_type_archive( array( 'tool', 'feature_proxy' ) )
+				|| is_tax( array( 'feature', 'tool_type' ) )
+				|| is_singular( 'tool' ) ) ) {
+			return;
+		}
+		?>
+		<div class="entry-label">
+			<?php echo esc_attr( get_post_type_primary_label() ); ?>
+		</div>
+		<?php
 	}
 
 	/**
