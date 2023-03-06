@@ -32,12 +32,60 @@ class Breadcrumbs {
 	 * Print
 	 */
 	public function print_breadcrumbs() {
+		// @todo Replace this; check for our CPTs/CTs.
 		if ( is_home() || is_front_page() || is_singular( array( 'post', 'page' ) ) ) {
 			return;
 		}
 
-		$server  = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_text_field' );
-		$referer = $server['HTTP_REFERER'];
+		// @todo Pre-build a list of potential referrers and check against that.
+		$server        = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_text_field' );
+		$referer       = isset( $server['HTTP_REFERER'] ) ? $server['HTTP_REFERER'] : '';
+		$referred_by   = false;
+		$referer_parts = wp_parse_url( $referer );
+		// phpcs:ignore
+		/*
+		Feature Directory:
+			Array
+			(
+				[scheme] => https
+				[host] => wpshortlist.test
+				[path] => /features/display-term-list/
+			)
+
+		Tool Directory:
+			Array
+			(
+				[scheme] => https
+				[host] => wpshortlist.test
+				[path] => /tools/
+			)
+
+		Tool Directory with category filter:
+			Array
+			(
+				[scheme] => https
+				[host] => wpshortlist.test
+				[path] => /tool-type/core-block/
+			)
+
+		Article:
+			Array
+			(
+				[scheme] => https
+				[host] => wpshortlist.test
+				[path] => /the-core-blocks/
+			)
+		*/
+
+		if ( home_url() === $referer_parts['scheme'] . '://' . $referer_parts['host'] ) {
+			// Could be directory or article.
+			$path_parts = explode( '/', trim( $referer_parts['path'], '/' ) );
+			if ( in_array( $path_parts[0], array( 'features', 'tools', 'tool-type' ), true ) ) {
+				$referred_by = 'directory';
+			} else {
+				$referred_by = 'article';
+			}
+		}
 
 		echo '<div class="wpshortlist-breadcrumbs">';
 		echo '<div class="wpshortlist-breadcrumbs-container">';
@@ -69,9 +117,9 @@ class Breadcrumbs {
 		}
 
 		// If tool.
-		if ( is_singular( 'tool' ) ) {
+		if ( is_singular( 'tool' ) && $referred_by ) {
 			$this->print_divider();
-			$this->print_referer( $referer );
+			$this->print_referer( $referer, $referred_by );
 		}
 
 		echo '</div>';
@@ -185,9 +233,20 @@ class Breadcrumbs {
 	 * Print referer
 	 *
 	 * @param string $referer The referrer URL.
+	 * @param string $referred_by The type of referrer.
 	 */
-	public function print_referer( $referer ) {
-		printf( '<span><a class="wpshortlist-breadcrumb" href="%s">%s</a></span>', esc_url( $referer ), esc_html__( 'Back to list', 'wpshortlist' ) );
+	public function print_referer( $referer, $referred_by ) {
+		switch ( $referred_by ) {
+			case 'directory':
+				$ref = __( 'Back to list', 'wpshortlist' );
+				break;
+			case 'article':
+				$ref = __( 'Back to article', 'wpshortlist' );
+				break;
+			default:
+				$ref = __( 'Back', 'wpshortlist' );
+		}
+		printf( '<span><a class="wpshortlist-breadcrumb" href="%s">%s</a></span>', esc_url( $referer ), esc_html( $ref ) );
 	}
 
 }
