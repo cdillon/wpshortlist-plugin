@@ -62,7 +62,7 @@ class Tool {
 
 		$args = array(
 			'labels'                => $labels,
-			'description'           => '',
+			'description'           => 'All core blocks, plugins and themes in our catalog.',
 
 			'public'                => true,
 			'publicly_queryable'    => true,

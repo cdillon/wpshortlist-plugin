@@ -26,6 +26,7 @@ class Theme_Integration {
 	 */
 	public function init() {
 		add_filter( 'get_the_archive_title', array( $this, 'archive_title' ), 20, 3 );
+		add_filter( 'get_the_archive_description', array( $this, 'archive_description' ), 999 );
 
 		add_action( 'kadence_loop_entry_header', array( $this, 'loop_entry_type' ) );
 		add_action( 'kadence_entry_header', array( $this, 'loop_entry_type' ) );
@@ -109,6 +110,44 @@ class Theme_Integration {
 		}
 
 		return $title;
+	}
+
+	/**
+	 * Modify the archive description.
+	 *
+	 * *** This overrides Discovery plugin. ***
+	 *
+	 * @param string $description The archive description.
+	 */
+	public function archive_description( $description ) {
+		$current_query = get_current_query_type();
+
+		// On Feature Directory, if tool type filter is active, the queried object is that tool type.
+		// We need our primary tax Feature instead.
+		if ( 'tax_archive' === $current_query['type'] ) {
+			$posts = false;
+
+			if ( 'feature' === $current_query['tax'] ) {
+				// Find the proxy post.
+				// @todo Store this post ID in options table instead of fetching every time.
+				$posts = get_posts(
+					array(
+						'name'           => $current_query['term'],
+						'posts_per_page' => 1,
+						'post_type'      => 'feature_proxy', // @todo can this be tied to our proxy config?
+						'post_status'    => 'publish',
+					)
+				);
+			}
+
+			// May be necessary to add similar logic when adding more filters to Tool Directory.
+
+			if ( $posts ) {
+				return $posts[0]->post_content;
+			}
+		}
+
+		return $description;
 	}
 
 }
