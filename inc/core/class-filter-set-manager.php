@@ -60,9 +60,11 @@ class Filter_Set_Manager {
 					$filter_sets[] = $filter_set;
 
 					// Store taxonomy info.
-					$taxonomy = get_taxonomy( $filter_set['taxonomy'] );
-					if ( $taxonomy ) {
-						$taxonomies [ $taxonomy->query_var ] = $filter_set['taxonomy'];
+					if ( isset( $filter_set['taxonomy'] ) ) {
+						$taxonomy = get_taxonomy( $filter_set['taxonomy'] );
+						if ( $taxonomy ) {
+							$taxonomies [ $taxonomy->query_var ] = $filter_set['taxonomy'];
+						}
 					}
 				}
 			}

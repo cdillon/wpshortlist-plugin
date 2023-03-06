@@ -23,8 +23,11 @@ class Feature_Proxy {
 	public function register() {
 
 		$labels = array(
-			'name'                     => esc_html__( 'Features', 'wpshortlist' ),
+			'name'                     => esc_html__( 'Features (proxy)', 'wpshortlist' ),
 			'singular_name'            => esc_html__( 'Feature Proxy', 'wpshortlist' ),
+
+			'archive_title'            => esc_html__( 'Feature Directory', 'wpshortlist' ),
+
 			'menu_name'                => esc_html__( 'Features (proxy)', 'wpshortlist' ),
 			'all_items'                => esc_html__( 'All Features', 'wpshortlist' ),
 			'add_new'                  => esc_html__( 'Add new', 'wpshortlist' ),

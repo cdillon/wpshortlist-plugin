@@ -35,12 +35,31 @@ class Theme_Integration {
 	 * @param string $original_title The original title.
 	 * @param string $prefix The prefix.
 	 *
+	 * @todo How to store these configurations somewhere?
+	 *
 	 * @return string
 	 */
 	public function archive_title( $title, $original_title, $prefix ) {
-		if ( is_post_type_archive() ) {
+		if ( is_post_type_archive( 'tool' ) ) {
 
-			$title  = post_type_archive_title( '', false );
+			$obj    = get_post_type_object( 'tool' );
+			$labels = get_post_type_labels( $obj );
+			if ( isset( $labels->archive_title ) && $labels->archive_title ) {
+				$title = $labels->archive_title;
+			}
+
+			// Remove default WordPress prefix.
+			$prefix = '';
+
+		} elseif ( is_post_type_archive( 'feature_proxy' ) ) {
+
+			$obj    = get_post_type_object( 'feature_proxy' );
+			$labels = get_post_type_labels( $obj );
+			if ( isset( $labels->archive_title ) && $labels->archive_title ) {
+				$title = $labels->archive_title;
+			}
+
+			// Remove default WordPress prefix.
 			$prefix = '';
 
 		} elseif ( is_tax() ) {
@@ -56,6 +75,7 @@ class Theme_Integration {
 					_x( '%s:', 'taxonomy term archive title prefix' ),
 					$tax->labels->singular_name
 				);
+				$prefix = '';
 			}
 		}
 

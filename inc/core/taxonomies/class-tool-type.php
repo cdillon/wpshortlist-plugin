@@ -25,6 +25,9 @@ class Tool_Type {
 		$labels = array(
 			'name'                       => esc_html__( 'Tool Types', 'wpshortlist' ),
 			'singular_name'              => esc_html__( 'Tool Type', 'wpshortlist' ),
+
+			'breadcrumb'                 => esc_html__( 'Type', 'wpshortlist' ),
+
 			'menu_name'                  => esc_html__( 'Tool Types', 'wpshortlist' ),
 			'all_items'                  => esc_html__( 'All Tool Types', 'wpshortlist' ),
 			'edit_item'                  => esc_html__( 'Edit Tool Type', 'wpshortlist' ),

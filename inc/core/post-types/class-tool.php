@@ -25,6 +25,9 @@ class Tool {
 		$labels = array(
 			'name'                     => esc_html__( 'Tools', 'wpshortlist' ),
 			'singular_name'            => esc_html__( 'Tool', 'wpshortlist' ),
+
+			'archive_title'            => esc_html__( 'Tool Directory', 'wpshortlist' ),
+
 			'menu_name'                => esc_html__( 'Tools', 'wpshortlist' ),
 			'all_items'                => esc_html__( 'All Tools', 'wpshortlist' ),
 			'add_new'                  => esc_html__( 'Add new', 'wpshortlist' ),

@@ -64,5 +64,6 @@ function get_current_query_type() {
 		}
 	}
 
+	// @todo If single, this should return post type info.
 	return false;
 }

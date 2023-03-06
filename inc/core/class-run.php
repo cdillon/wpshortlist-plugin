@@ -52,6 +52,9 @@ class Run {
 		$theme = new Theme_Integration();
 		$theme->init();
 
+		$breadcrumbs = new Breadcrumbs();
+		$breadcrumbs->init();
+
 		$ajax = new Ajax();
 		$ajax->init();
 	}

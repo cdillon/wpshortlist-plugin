@@ -25,6 +25,9 @@ class Feature {
 		$labels = array(
 			'name'                       => esc_html__( 'Features', 'wpshortlist' ),
 			'singular_name'              => esc_html__( 'Feature', 'wpshortlist' ),
+
+			'breadcrumb'                 => esc_html__( 'Feature', 'wpshortlist' ),
+
 			'menu_name'                  => esc_html__( 'Features', 'wpshortlist' ),
 			'all_items'                  => esc_html__( 'All Features', 'wpshortlist' ),
 			'edit_item'                  => esc_html__( 'Edit Feature', 'wpshortlist' ),
