@@ -77,13 +77,15 @@ class Breadcrumbs {
 			)
 		*/
 
-		if ( home_url() === $referer_parts['scheme'] . '://' . $referer_parts['host'] ) {
-			// Could be directory or article.
-			$path_parts = explode( '/', trim( $referer_parts['path'], '/' ) );
-			if ( in_array( $path_parts[0], array( 'features', 'tools', 'tool-type' ), true ) ) {
-				$referred_by = 'directory';
-			} else {
-				$referred_by = 'article';
+		if ( isset( $referer_parts['scheme'] ) ) {
+			if ( home_url() === $referer_parts['scheme'] . '://' . $referer_parts['host'] ) {
+				// Could be directory or article.
+				$path_parts = explode( '/', trim( $referer_parts['path'], '/' ) );
+				if ( in_array( $path_parts[0], array( 'features', 'tools', 'tool-type' ), true ) ) {
+					$referred_by = 'directory';
+				} else {
+					$referred_by = 'article';
+				}
 			}
 		}
 
