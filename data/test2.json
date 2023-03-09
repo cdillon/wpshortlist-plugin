@@ -1,9 +1,0 @@
-{
-	"name": "Test 2",
-	"rules": [
-		"post_type_archive:feature_proxy",
-		"tax_archive:feature_category"
-	],
-	"order": 20,
-	"content": "Search filter for any Feature Proxy archive."
-}

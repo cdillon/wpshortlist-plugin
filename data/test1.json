@@ -1,8 +1,0 @@
-{
-	"name": "Test 1",
-	"rules": [
-		"tax_archive:feature"
-	],
-	"order": 10,
-	"content": "Search filter for the Feature archive."
-}
