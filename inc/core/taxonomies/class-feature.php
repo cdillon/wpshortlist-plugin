@@ -65,7 +65,6 @@ class Feature {
 			'show_admin_column'     => true,
 			'hierarchical'          => true,
 
-			// If using proxy, `rewrite` and `query_var` recommended but not required.
 			'rewrite'               => array(
 				'slug'       => 'features',
 				'with_front' => true,
