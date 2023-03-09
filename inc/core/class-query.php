@@ -39,10 +39,74 @@ class Query {
 	 * Init
 	 */
 	public function init() {
+		add_action( 'init', array( $this, 'remove_empty_query_args' ), 1 );
+
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
+
+		// @see class-wp.php
+		add_filter( 'request', array( $this, 'prioritize_primary_taxonomy' ) );
+
+		// @see class-wp-query.php
+		add_filter( 'posts_clauses', array( $this, 'add_search_clause' ) );
+
 		add_action( 'pre_get_posts', array( $this, 'change_sort_order' ) );
 		add_action( 'pre_get_posts', array( $this, 'alter_query' ) );
 		add_action( 'pre_get_posts', array( $this, 'log_query' ), 999 );
+	}
+
+	/**
+	 * Remove empty query args and redirect.
+	 *
+	 * Why? Because our filter form contains a search field that may not be used
+	 * but the GET string still includes the parameter name.
+	 *
+	 * For example:
+	 *
+	 * From /features/display-term-list/?fs=&tool-type=plugin
+	 *                                   ^ empty
+	 * To   /features/display-term-list/?tool-type=plugin
+	 */
+	public function remove_empty_query_args() {
+		$server = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_text_field' );
+		if ( false !== strpos( $server['REQUEST_URI'], 'favicon' ) ) {
+			return;
+		}
+
+		$parsed_url = wp_parse_url( $server['REQUEST_URI'] );
+		if ( ! isset( $parsed_url['query'] ) ) {
+			return;
+		}
+
+		$redirect       = false;
+		$new_query_args = array();
+		$query_args     = explode( '&', $parsed_url['query'] );
+
+		foreach ( $query_args as $query_arg ) {
+			$query_pair = explode( '=', $query_arg );
+
+			if ( empty( $query_pair[1] ) ) {
+				// Missing value so don't save it, and enable redirect.
+				$redirect = true;
+			} else {
+				// Save it.
+				$new_query_args[] = $query_arg;
+			}
+		}
+
+		if ( ! $redirect ) {
+			return;
+		}
+
+		$new_request_uri = $parsed_url['path'];
+
+		$new_query_string = implode( '&', $new_query_args );
+		if ( $new_query_string ) {
+			$new_request_uri = $new_request_uri . '?' . $new_query_string;
+		}
+
+		if ( wp_safe_redirect( home_url( $new_request_uri ) ) ) {
+			exit;
+		}
 	}
 
 	/**
@@ -65,9 +129,73 @@ class Query {
 			}
 		}
 
-		$vars = array_merge( $vars, $new_vars );
+		sort( $new_vars );
+		$vars = array_unique( array_merge( $vars, $new_vars ) );
+
+		// Our unique search var.
+		$vars[] = 'fs';
 
 		return $vars;
+	}
+
+	/**
+	 * Modify the parsed query vars before creating the query.
+	 *
+	 * If switching from a post type archive to a *primary* taxonomy archive,
+	 * then remove post type parameter. This is an edge case specific to our
+	 * implementation.
+	 *
+	 * @param array $qv The parsed query vars.
+	 */
+	public function prioritize_primary_taxonomy( $qv ) {
+		/*
+		 * @todo Compare against a list of our taxonomies that have rewrites.
+		 *
+		 * Currently only 2 places this is needed:
+		 * When selecting the Feature Category on the Feature Directory,
+		 * and when selecting the Tool Type on the Tool Directory.
+		 */
+		if ( ! ( isset( $qv['feature-category'] ) || isset( $qv['tool-type'] ) ) ) {
+			return $qv;
+		}
+
+		// Taxonomy overrides post_type.
+		if ( isset( $qv['post_type'] ) ) {
+			unset( $qv['post_type'] );
+			$url = add_query_arg( $qv, home_url() );
+			if ( wp_safe_redirect( $url ) ) {
+				exit;
+			}
+		}
+
+		return $qv;
+	}
+
+	/**
+	 * Modify query clauses.
+	 *
+	 * @param array $clauses The query clauses.
+	 */
+	public function add_search_clause( $clauses ) {
+		global $wpdb;
+
+		// We currently only have 2 starting points: Feature Directory and Tool Directory.
+		// How to not hardcode this?
+		if ( false === strpos( $clauses['where'], "post_type = 'feature_proxy'" ) && false === strpos( $clauses['where'], "post_type = 'tool'" ) ) {
+			return $clauses;
+		}
+
+		$search = get_query_var( 'fs' );
+		if ( $search ) {
+			$search            = '%' . $search . '%';
+			$where             = $wpdb->prepare(
+				' AND ( (wp_posts.post_title LIKE %s) OR (wp_posts.post_excerpt LIKE %s) OR (wp_posts.post_content LIKE %s) )',
+				array( $search, $search, $search )
+			);
+			$clauses['where'] .= $where;
+		}
+
+		return $clauses;
 	}
 
 	/**
@@ -95,7 +223,6 @@ class Query {
 	 * @return boolean
 	 */
 	public function ok_modify( $query ) {
-
 		if ( ! is_a( $query, 'WP_Query' ) ) {
 			return false;
 		}
