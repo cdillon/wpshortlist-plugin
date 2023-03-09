@@ -90,7 +90,7 @@ class Feature_Proxy {
 				'slug'       => 'feature_proxy',
 				'with_front' => true,
 			),
-			'query_var'             => true,
+			'query_var'             => false,
 
 			'template'              => array(),
 			'supports'              => array( 'title', 'editor', 'thumbnail' ),
