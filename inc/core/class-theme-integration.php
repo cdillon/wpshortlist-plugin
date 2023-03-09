@@ -38,7 +38,7 @@ class Theme_Integration {
 	public function loop_entry_type() {
 		// @todo Replace this logic with a common function.
 		if ( ! ( is_post_type_archive( array( 'tool', 'feature_proxy' ) )
-				|| is_tax( array( 'feature', 'tool_type' ) )
+				|| is_tax( array( 'feature', 'feature_category', 'tool_type' ) )
 				|| is_singular( 'tool' ) ) ) {
 			return;
 		}
