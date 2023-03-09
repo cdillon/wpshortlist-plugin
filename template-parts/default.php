@@ -5,6 +5,8 @@
  * @package wpshortlist
  */
 
+namespace Shortlist\Core;
+
 /*
 HTML Structure:
 
@@ -26,14 +28,23 @@ HTML Structure:
 	</div><!-- .wpshortlist-filterset -->
 </form>
 */
+
+// Omitting `action` attribute so form will pst to the current page.
 ?>
-<form id="wpshortlist-form" class="wpshortlist-form">
+<form id="wpshortlist-form" class="wpshortlist-form" method="get">
 
 	<div class="form-actions">
 		<div class="form-action action-reset">
 			<?php $this->print_filter_reset_all(); ?>
 		</div>
 	</div>
+
+
+	<div class="wpshortlist-search-wrap">
+		<input type="search" id="wpshortlist-search" class="" name="fs" value="<?php echo esc_attr( get_query_var( 'fs' ) ); ?>" placeholder="">
+		<button type="submit" class="">Search</button>
+	</div>
+
 
 	<?php foreach ( $this->current as $filter_set ) : ?>
 	<div class="wpshortlist-filterset">
@@ -60,5 +71,9 @@ HTML Structure:
 		<?php endif; ?>
 	</div><!-- .wpshortlist-filterset -->
 	<?php endforeach; ?>
+
+	<div>
+		<button type="submit" class="">Apply</button>
+	</div>
 
 </form>
