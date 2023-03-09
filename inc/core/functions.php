@@ -8,6 +8,30 @@
 namespace Shortlist\Core;
 
 /**
+ * Return the current URL.
+ */
+function get_current_url() {
+	global $wp;
+
+	// phpcs:disable
+	// This does not work with query string.
+	// home_url( $wp->request );
+	// https://wpshortlist.test/features/display-term-list
+
+	// This does not apply rewrite rules.
+	// add_query_arg( $wp->query_vars, home_url( $wp->request ) ) );
+	// https://wpshortlist.test/features/display-term-list?feature=display-term-list&method-display-term-list=block
+	//                                   ^                         ^
+	// phpcs:enable
+
+	// Not perfect. This does not filter out unregistered query vars.
+	$server = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_text_field' );
+	$url    = home_url( $server['REQUEST_URI'] );
+
+	return $url;
+}
+
+/**
  * Return the current query type and values, available after parse_query hook.
  *
  * This is like a custom `get_queried_object` function.
