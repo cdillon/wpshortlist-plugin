@@ -67,6 +67,10 @@ class Query {
 	 * To   /features/display-term-list/?tool-type=plugin
 	 */
 	public function remove_empty_query_args() {
+		if ( is_admin() ) {
+			return;
+		}
+
 		$server = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_text_field' );
 		if ( false !== strpos( $server['REQUEST_URI'], 'favicon' ) ) {
 			return;
@@ -84,7 +88,7 @@ class Query {
 		foreach ( $query_args as $query_arg ) {
 			$query_pair = explode( '=', $query_arg );
 
-			if ( empty( $query_pair[1] ) ) {
+			if ( 'fs' === $query_pair[0] && empty( $query_pair[1] ) ) {
 				// Missing value so don't save it, and enable redirect.
 				$redirect = true;
 			} else {
@@ -117,7 +121,8 @@ class Query {
 	 * @return array
 	 */
 	public function register_query_vars( $vars ) {
-		$new_vars = array();
+		// Start with our unique search var.
+		$new_vars = array( 'fs' );
 
 		// Iterate filter sets that have filters.
 		$has_filters = $this->filter_sets->get_filter_sets_with( 'filters' );
@@ -129,13 +134,7 @@ class Query {
 			}
 		}
 
-		sort( $new_vars );
-		$vars = array_unique( array_merge( $vars, $new_vars ) );
-
-		// Our unique search var.
-		$vars[] = 'fs';
-
-		return $vars;
+		return array_unique( array_merge( $vars, $new_vars ) );
 	}
 
 	/**
@@ -148,6 +147,10 @@ class Query {
 	 * @param array $qv The parsed query vars.
 	 */
 	public function prioritize_primary_taxonomy( $qv ) {
+		if ( is_admin() ) {
+			return $qv;
+		}
+
 		/*
 		 * @todo Compare against a list of our taxonomies that have rewrites.
 		 *
@@ -179,21 +182,27 @@ class Query {
 	public function add_search_clause( $clauses ) {
 		global $wpdb;
 
+		if ( is_admin() ) {
+			return $clauses;
+		}
+
+		$search = get_query_var( 'fs' );
+		if ( ! $search ) {
+			return $clauses;
+		}
+
 		// We currently only have 2 starting points: Feature Directory and Tool Directory.
 		// How to not hardcode this?
 		if ( false === strpos( $clauses['where'], "post_type = 'feature_proxy'" ) && false === strpos( $clauses['where'], "post_type = 'tool'" ) ) {
 			return $clauses;
 		}
 
-		$search = get_query_var( 'fs' );
-		if ( $search ) {
-			$search            = '%' . $search . '%';
-			$where             = $wpdb->prepare(
-				' AND ( (wp_posts.post_title LIKE %s) OR (wp_posts.post_excerpt LIKE %s) OR (wp_posts.post_content LIKE %s) )',
-				array( $search, $search, $search )
-			);
-			$clauses['where'] .= $where;
-		}
+		$search            = '%' . $search . '%';
+		$where             = $wpdb->prepare(
+			' AND ( (wp_posts.post_title LIKE %s) OR (wp_posts.post_excerpt LIKE %s) OR (wp_posts.post_content LIKE %s) )',
+			array( $search, $search, $search )
+		);
+		$clauses['where'] .= $where;
 
 		return $clauses;
 	}
@@ -331,12 +340,18 @@ class Query {
 	 * @param WP_Query $q The query.
 	 */
 	public function log_query( $q ) {
+		if ( is_admin() ) {
+			return;
+		}
+
 		if ( ! $q->is_main_query() ) {
 			return;
 		}
+
 		if ( isset( $q->query['favicon'] ) ) {
 			return;
 		}
+
 		if ( isset( $q->query['post_type'] ) && in_array( $q->query['post_type'], array( 'nav_menu_item', 'wp_template', 'wp_template_part' ), true ) ) {
 			return;
 		}
