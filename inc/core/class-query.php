@@ -43,10 +43,6 @@ class Query {
 
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
 
-		// @see class-wp.php
-		add_filter( 'request', array( $this, 'prioritize_primary_taxonomy' ) );
-
-		// @see class-wp-query.php
 		add_filter( 'posts_clauses', array( $this, 'add_search_clause' ) );
 
 		add_action( 'pre_get_posts', array( $this, 'change_sort_order' ) );
@@ -135,43 +131,6 @@ class Query {
 		}
 
 		return array_unique( array_merge( $vars, $new_vars ) );
-	}
-
-	/**
-	 * Modify the parsed query vars before creating the query.
-	 *
-	 * If switching from a post type archive to a *primary* taxonomy archive,
-	 * then remove post type parameter. This is an edge case specific to our
-	 * implementation.
-	 *
-	 * @param array $qv The parsed query vars.
-	 */
-	public function prioritize_primary_taxonomy( $qv ) {
-		if ( is_admin() ) {
-			return $qv;
-		}
-
-		/*
-		 * @todo Compare against a list of our taxonomies that have rewrites.
-		 *
-		 * Currently only 2 places this is needed:
-		 * When selecting the Feature Category on the Feature Directory,
-		 * and when selecting the Tool Type on the Tool Directory.
-		 */
-		if ( ! ( isset( $qv['feature-category'] ) || isset( $qv['tool-type'] ) ) ) {
-			return $qv;
-		}
-
-		// Taxonomy overrides post_type.
-		if ( isset( $qv['post_type'] ) ) {
-			unset( $qv['post_type'] );
-			$url = add_query_arg( $qv, home_url() );
-			if ( wp_safe_redirect( $url ) ) {
-				exit;
-			}
-		}
-
-		return $qv;
 	}
 
 	/**
