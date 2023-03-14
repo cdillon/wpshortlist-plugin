@@ -61,7 +61,7 @@ class Render {
 			// Build a unique ID like 'supports-display-term-list-tags'.
 			$input_id = $filter['query_var'] . '-' . $option_id;
 
-			$checked = $this->get_checked( $option_id, $filter );
+			$checked = $this->is_checked( $option_id, $filter );
 
 			$args = array(
 				'type'    => $filter['input_type'],
@@ -87,39 +87,12 @@ class Render {
 	 *
 	 * @return bool
 	 */
-	private function get_checked( $option_id, $filter ) {
-		$checked = false;
-
-		switch ( $filter['type'] ) {
-			case 'tax':
-				// Primary taxonomy (using rewrites) are available through $current_query.
-				// Must check if we are on a tax archive because the filter may be
-				// present on post type archives too.
-				$current_query = get_current_query_type();
-				if ( 'tax_archive' === $current_query['type'] ) {
-					$checked = $option_id === $current_query['term'];
-				}
-				break;
-
-			case 'post_meta':
-				// Post meta are query string parameters (a.k.a. search args)
-				// and are available through `get_query_var()`.
-				// May be present on tax archives or post type archives.
-				$q_value = get_query_var( $filter['query_var'] );
-				$checked = in_array( $option_id, explode( '|', $q_value ), true );
-				break;
-
-			case 'tax_query_var':
-				// Secondary taxonomies are query string parameters (like post meta).
-				$q_value = get_query_var( $filter['query_var'] );
-				$checked = in_array( $option_id, explode( '|', $q_value ), true );
-				break;
-
-			default:
-				$checked = false;
+	private function is_checked( $option_id, $filter ) {
+		$qv = get_query_var( $filter['query_var'] );
+		if ( ! is_array( $qv ) ) {
+			$qv = explode( '|', $qv );
 		}
-
-		return $checked;
+		return in_array( $option_id, $qv, true );
 	}
 
 	/**
@@ -132,11 +105,12 @@ class Render {
 	 * @return void
 	 */
 	public function print_filter_list_item( $args ) {
+		$grouped = 'checkbox' === $args['type'] ? '[]' : '';
 		?>
 		<li class="wpshortlist-filter-list-item">
 			<input type="<?php echo esc_attr( $args['type'] ); ?>"
 				id="<?php echo esc_attr( $args['id'] ); ?>"
-				name="<?php echo esc_attr( $args['name'] ); ?>"
+				name="<?php echo esc_attr( $args['name'] ) . $grouped; ?>"
 				value="<?php echo esc_attr( $args['value'] ); ?>"
 				title="<?php echo esc_attr( $args['title'] ); ?>"
 				<?php checked( $args['checked'] ); ?> />
@@ -167,18 +141,64 @@ class Render {
 	/**
 	 * Print a reset link for a single filter.
 	 *
+	 * @param array $filter The filter.
+	 *
 	 * @return void
 	 */
-	public function print_filter_reset() {
+	public function print_filter_reset( $filter ) {
+		global $wp_query, $wp;
+		$q = $wp_query->query;
+		// Remove the current filter's query var and the archive query vars.
+		unset( $q[ $filter['query_var'] ], $q['feature'], $q['post_type'], $q['tool'] );
+		$reset = home_url( add_query_arg( $q, $wp->request ) );
 		?>
 		<div class="filter-action action-reset">
-			<div class="action-enabled" style="display: none;">
-				<a href="#" title="reset this filter" data-action="reset">
+			<div class="action-enabled">
+				<a href="<?php echo esc_url( $reset ); ?>" title="reset this filter" data-action="reset">
 					<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
 				</a>
 			</div>
 			<div class="action-disabled" style="display: none;">
 				<?php esc_html_e( 'reset', 'wpshortlist' ); ?>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Print a reset link for the entire form.
+	 *
+	 * @return void
+	 */
+	public function print_filter_reset_all() {
+		global $wp_query;
+		$q     = $wp_query->query;
+		$reset = false;
+
+		if ( isset( $q['post_type'] ) && 'feature_proxy' === $q['post_type'] ) {
+			$reset = get_post_type_archive_link( 'feature_proxy' );
+		}
+
+		if ( isset( $q['post_type'] ) && 'tool' === $q['post_type'] ) {
+			$reset = get_post_type_archive_link( 'tool' );
+		}
+
+		if ( isset( $q['feature'] ) ) {
+			$reset = get_term_link( $q['feature'], 'feature' );
+		}
+
+		if ( ! $reset ) {
+			return;
+		}
+		?>
+		<div class="form-action action-reset">
+			<div class="action-enabled">
+				<a href="<?php echo esc_url( $reset ); ?>" title="reset all filters" data-action="reset-form">
+					<?php esc_html_e( 'reset all', 'wpshortlist' ); ?>
+				</a>
+			</div>
+			<div class="action-disabled" style="display: none;">
+				<?php esc_html_e( 'reset all', 'wpshortlist' ); ?>
 			</div>
 		</div>
 		<?php
@@ -199,26 +219,6 @@ class Render {
 			</div>
 			<div class="action-disabled" style="display: none;">
 				<?php esc_html_e( 'check all', 'wpshortlist' ); ?>
-			</div>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Print a reset link for the entire form.
-	 *
-	 * @return void
-	 */
-	public function print_filter_reset_all() {
-		?>
-		<div class="form-action action-reset">
-			<div class="action-enabled" style="display: none;">
-				<a href="#" title="reset all filters" data-action="reset-form">
-					<?php esc_html_e( 'reset all', 'wpshortlist' ); ?>
-				</a>
-			</div>
-			<div class="action-disabled" style="display: none;">
-				<?php esc_html_e( 'reset all', 'wpshortlist' ); ?>
 			</div>
 		</div>
 		<?php
