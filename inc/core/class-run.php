@@ -57,6 +57,9 @@ class Run {
 
 		$ajax = new Ajax();
 		$ajax->init();
+
+		$test = new Test();
+		// $test->init();
 	}
 
 }
