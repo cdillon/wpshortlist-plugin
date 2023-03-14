@@ -268,7 +268,11 @@ class Query {
 				}
 
 				// Disassemble multiple values.
-				$q_values = explode( '|', $query->query[ $filter['query_var'] ] );
+				if ( is_array( $query->query[ $filter['query_var'] ] ) ) {
+					$q_values = $query->query[ $filter['query_var'] ];
+				} else {
+					$q_values = explode( '|', $query->query[ $filter['query_var'] ] );
+				}
 
 				if ( 'AND' === $filter['relation'] ) {
 					// Add a meta query for each option value.
