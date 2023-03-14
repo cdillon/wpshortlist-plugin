@@ -26,7 +26,7 @@ class Tool_Type {
 			'name'                       => esc_html__( 'Tool Types', 'wpshortlist' ),
 			'singular_name'              => esc_html__( 'Tool Type', 'wpshortlist' ),
 
-			'breadcrumb'                 => esc_html__( 'Type', 'wpshortlist' ),
+			'breadcrumb'                 => esc_html__( 'Tool Type', 'wpshortlist' ),
 
 			'menu_name'                  => esc_html__( 'Tool Types', 'wpshortlist' ),
 			'all_items'                  => esc_html__( 'All Tool Types', 'wpshortlist' ),
@@ -65,10 +65,7 @@ class Tool_Type {
 			'show_admin_column'     => true,
 			'hierarchical'          => true,
 
-			'rewrite'               => array(
-				'slug'       => 'tool-type',
-				'with_front' => true,
-			),
+			'rewrite'               => false,
 			'query_var'             => 'tool-type',
 
 			'show_in_rest'          => true,

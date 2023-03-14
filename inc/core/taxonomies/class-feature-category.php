@@ -65,11 +65,7 @@ class Feature_Category {
 			'show_admin_column'     => true,
 			'hierarchical'          => true,
 
-			// If using proxy, `rewrite` and `query_var` recommended but not required.
-			'rewrite'               => array(
-				'slug'       => 'feature-category',
-				'with_front' => true,
-			),
+			'rewrite'               => false,
 			'query_var'             => 'feature-category',
 
 			'show_in_rest'          => true,
