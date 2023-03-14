@@ -289,7 +289,7 @@ class Query {
 		}
 
 		// phpcs:ignore
-		// q2( $meta_query, 'NEW META QUERY', '', 'meta-query.log' );
+		// q1( $meta_query, 'NEW META QUERY', '', 'meta-query.log' );
 		$query->set( 'meta_query', $meta_query );
 	}
 
@@ -315,7 +315,7 @@ class Query {
 			return;
 		}
 
-		q2( $q->query, 'QUERY', '-', 'query.log' );
+		q1( $q->query, 'QUERY', '-', 'query.log' );
 	}
 
 }
