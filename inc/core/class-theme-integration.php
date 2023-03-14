@@ -56,48 +56,14 @@ class Theme_Integration {
 	 * @param string $original_title The original title.
 	 * @param string $prefix The prefix.
 	 *
-	 * @todo How to store these configurations somewhere?
+	 * @todo How to store these configurations somewhere? Filters?
 	 *
 	 * @return string
 	 */
 	public function archive_title( $title, $original_title, $prefix ) {
-		if ( is_post_type_archive( 'tool' ) ) {
-
-			$obj    = get_post_type_object( 'tool' );
-			$labels = get_post_type_labels( $obj );
-			if ( isset( $labels->archive_title ) && $labels->archive_title ) {
-				$title = $labels->archive_title;
-			}
-
-			// Remove default WordPress prefix.
+		$title = $this->get_archive_title();
+		if ( $title ) {
 			$prefix = '';
-
-		} elseif ( is_post_type_archive( 'feature_proxy' ) ) {
-
-			$obj    = get_post_type_object( 'feature_proxy' );
-			$labels = get_post_type_labels( $obj );
-			if ( isset( $labels->archive_title ) && $labels->archive_title ) {
-				$title = $labels->archive_title;
-			}
-
-			// Remove default WordPress prefix.
-			$prefix = '';
-
-		} elseif ( is_tax() ) {
-
-			// Find the primary tax.
-			$current_query = get_current_query_type();
-			if ( $current_query ) {
-				$tax    = get_taxonomy( $current_query['tax'] );
-				$term   = get_term_by( 'slug', $current_query['term'], $current_query['tax'] );
-				$title  = $term->name;
-				$prefix = sprintf(
-				/* translators: %s: Taxonomy singular name. */
-					_x( '%s:', 'taxonomy term archive title prefix' ),
-					$tax->labels->singular_name
-				);
-				$prefix = '';
-			}
 		}
 
 		if ( $prefix ) {
@@ -110,6 +76,62 @@ class Theme_Integration {
 		}
 
 		return $title;
+	}
+
+	/**
+	 * New archive title.
+	 *
+	 * Get the archive title from the post_type or term properties.
+	 *
+	 * possible routes
+	 * ---------------
+	 * feature
+	 * feature directory
+	 * feature directory + feature category
+	 * tool directory
+	 * tool directory + tool type
+	 */
+	private function get_archive_title() {
+		global $wp_query;
+		$q = $wp_query->query;
+
+		// Feature.
+		if ( isset( $q['feature'] ) ) {
+			$term = get_term_by( 'slug', $q['feature'], 'feature' );
+			return $term->name;
+		}
+
+		// Feature Directory.
+		if ( isset( $q['post_type'] ) && 'feature_proxy' === $q['post_type'] ) {
+			// plus Feature Category.
+			if ( isset( $q['feature-category'] ) ) {
+				$term = get_term_by( 'slug', $q['feature-category'], 'feature_category' );
+				return $term->name;
+			} else {
+				$obj    = get_post_type_object( 'feature_proxy' );
+				$labels = get_post_type_labels( $obj );
+				if ( isset( $labels->archive_title ) && $labels->archive_title ) {
+					return $labels->archive_title;
+				}
+			}
+		}
+
+		// Tool Directory.
+		if ( isset( $q['post_type'] ) && 'tool' === $q['post_type'] ) {
+			// plus Tool Type.
+			if ( isset( $q['tool-type'] ) ) {
+				$term = get_term_by( 'slug', $q['tool-type'], 'tool_type' );
+				return $term->name;
+			} else {
+				$obj    = get_post_type_object( 'tool' );
+				$labels = get_post_type_labels( $obj );
+				if ( isset( $labels->archive_title ) && $labels->archive_title ) {
+					return $labels->archive_title;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
