@@ -32,16 +32,19 @@ class Breadcrumbs {
 	 * Print
 	 */
 	public function print_breadcrumbs() {
+		global $wp_query;
+		$q = $wp_query->query;
+
 		// @todo Replace this; check for our CPTs/CTs.
 		if ( is_home() || is_front_page() || is_singular( array( 'post', 'page' ) ) ) {
 			return;
 		}
 
 		// @todo Pre-build a list of potential referrers and check against that.
-		$server        = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_text_field' );
-		$referer       = isset( $server['HTTP_REFERER'] ) ? $server['HTTP_REFERER'] : '';
-		$referred_by   = false;
-		$referer_parts = wp_parse_url( $referer );
+		$server    = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_url' );
+		$referer   = isset( $server['HTTP_REFERER'] ) ? $server['HTTP_REFERER'] : '';
+		$ref_by    = false;
+		$ref_parts = wp_parse_url( $referer );
 		// phpcs:ignore
 		/*
 		Feature Directory:
@@ -50,6 +53,7 @@ class Breadcrumbs {
 				[scheme] => https
 				[host] => wpshortlist.test
 				[path] => /features/display-term-list/
+				[query] => fs=&supports-display-term-list[]=categories&supports-display-term-list[]=tags
 			)
 
 		Tool Directory:
@@ -75,16 +79,16 @@ class Breadcrumbs {
 				[host] => wpshortlist.test
 				[path] => /the-core-blocks/
 			)
-		*/
+ 		*/
 
-		if ( isset( $referer_parts['scheme'] ) ) {
-			if ( home_url() === $referer_parts['scheme'] . '://' . $referer_parts['host'] ) {
+		if ( isset( $ref_parts['scheme'] ) ) {
+			if ( home_url() === $ref_parts['scheme'] . '://' . $ref_parts['host'] ) {
 				// Could be directory or article.
-				$path_parts = explode( '/', trim( $referer_parts['path'], '/' ) );
+				$path_parts = explode( '/', trim( $ref_parts['path'], '/' ) );
 				if ( in_array( $path_parts[0], array( 'features', 'tools', 'tool-type' ), true ) ) {
-					$referred_by = 'directory';
+					$ref_by = 'directory';
 				} else {
-					$referred_by = 'article';
+					$ref_by = 'article';
 				}
 			}
 		}
@@ -119,9 +123,9 @@ class Breadcrumbs {
 		}
 
 		// If tool.
-		if ( is_singular( 'tool' ) && $referred_by ) {
+		if ( is_singular( 'tool' ) && $ref_by ) {
 			$this->print_divider();
-			$this->print_referer( $referer, $referred_by );
+			$this->print_referer( $referer, $ref_by );
 		}
 
 		echo '</div>';
@@ -158,6 +162,7 @@ class Breadcrumbs {
 				echo '<span>' . esc_html( $text ) . '</span>';
 				break;
 			case 'feature_directory':
+				// @todo also used by form reset, write a common function
 				$post_type_object = get_post_type_object( 'feature_proxy' );
 				$labels           = get_post_type_labels( $post_type_object );
 				$url              = get_post_type_archive_link( 'feature_proxy' );
@@ -168,7 +173,6 @@ class Breadcrumbs {
 				// No proxy, for now.
 				$tax    = get_taxonomy( 'feature_category' );
 				$labels = get_taxonomy_labels( $tax );
-				$url    = get_taxonomy_archive_link( 'feature_category' );
 				if ( isset( $labels->breadcrumb ) ) {
 					$text = $labels->breadcrumb;
 				} else {
@@ -208,10 +212,10 @@ class Breadcrumbs {
 	 * Print referer
 	 *
 	 * @param string $referer The referrer URL.
-	 * @param string $referred_by The type of referrer.
+	 * @param string $ref_by The type of referrer.
 	 */
-	public function print_referer( $referer, $referred_by ) {
-		switch ( $referred_by ) {
+	public function print_referer( $referer, $ref_by ) {
+		switch ( $ref_by ) {
 			case 'directory':
 				$ref = __( 'Back to list', 'wpshortlist' );
 				break;
