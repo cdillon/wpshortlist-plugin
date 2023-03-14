@@ -95,7 +95,7 @@ class Breadcrumbs {
 		$this->print_breadcrumb( 'home' );
 
 		// If feature selected.
-		if ( $this->is_primary_archive( 'feature' ) ) {
+		if ( isset( $q['feature'] ) ) {
 			$this->print_sep();
 			$this->print_breadcrumb( 'feature_directory' );
 			$this->print_sep();
@@ -103,7 +103,7 @@ class Breadcrumbs {
 		}
 
 		// If feature category selected.
-		if ( $this->is_primary_archive( 'feature_category' ) ) {
+		if ( isset( $q['feature-category'] ) ) {
 			$this->print_sep();
 			$this->print_breadcrumb( 'feature_directory' );
 			$this->print_sep();
@@ -111,7 +111,7 @@ class Breadcrumbs {
 		}
 
 		// If tool type selected.
-		if ( $this->is_primary_archive( 'tool_type' ) ) {
+		if ( isset( $q['post_type'] ) && isset( $q['tool-type'] ) ) {
 			$this->print_sep();
 			$this->print_breadcrumb( 'tool_directory' );
 			$this->print_sep();
@@ -188,33 +188,6 @@ class Breadcrumbs {
 				break;
 			default:
 		}
-	}
-
-	/**
-	 * Is primary archive?
-	 *
-	 * @param string $tax Taxonomy name.
-	 *
-	 * @todo move to common function
-	 */
-	public function is_primary_archive( $tax ) {
-		$current_query = get_current_query_type();
-		// phpcs:ignore
-		/*
-		Array
-		(
-			[type] => tax_archive
-			[tax] => feature
-			[term] => display-term-list
-		)
-		*/
-		if ( isset( $current_query['type'] ) && 'tax_archive' === $current_query['type'] ) {
-			if ( isset( $current_query['tax'] ) && $tax === $current_query['tax'] ) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**
