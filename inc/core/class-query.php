@@ -67,7 +67,9 @@ class Query {
 			return;
 		}
 
-		$server = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_text_field' );
+		// Do not use `sanitize_text_field` here.
+		$server = map_deep( wp_unslash( (array) $_SERVER ), 'sanitize_url' );
+
 		if ( false !== strpos( $server['REQUEST_URI'], 'favicon' ) ) {
 			return;
 		}
