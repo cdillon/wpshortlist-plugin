@@ -70,10 +70,8 @@ class Filter_Set_Manager {
 			}
 		}
 
-		q2( $filter_sets, '', 'o', 'filter-sets.log' );
+		q1( $filter_sets, '', 'o', 'filter-sets.log' );
 		update_option( 'wpshortlist_filter_sets', $filter_sets );
-		q2( $taxonomies, '', 'o', 'taxonomies.log' );
-		update_option( 'wpshortlist_taxonomies', $taxonomies );
 	}
 
 	/**
@@ -81,7 +79,6 @@ class Filter_Set_Manager {
 	 */
 	public function erase() {
 		delete_option( 'wpshortlist_filter_sets' );
-		delete_option( 'wpshortlist_taxonomies' );
 	}
 
 }

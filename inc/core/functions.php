@@ -65,26 +65,61 @@ function get_current_url() {
  */
 function get_current_query_type() {
 	global $wp_query;
+	// phpcs:disable
+	/*
+	Array
+	(
+		[tool-type] => core-block
+		[feature] => display-terms-current-post  <----- PRIMARY -----
+	)
 
-	// Post type archives are simple.
-	if ( $wp_query->is_post_type_archive() ) {
+	Array
+	(
+		[tool-type] => core-block
+		[post_type] => tool  <----- PRIMARY -----
+	)
+	*/
+	// phpcs:enable
+
+	// *************************************************************************
+	// HARDCODE FIRST
+	// *************************************************************************
+
+	if ( isset( $wp_query->query['feature'] ) ) {
 		return array(
-			'type' => 'post_type_archive',
-			'name' => $wp_query->query['post_type'],
+			'type' => 'tax_archive',
+			'tax'  => 'feature',
+			'term' => $wp_query->query['feature'],
 		);
 	}
 
-	// Find the primary taxonomy.
-	if ( $wp_query->is_tax() ) {
-		$taxonomies = get_option( 'wpshortlist_taxonomies', array() );
-		foreach ( $taxonomies as $tax_query_var => $tax_name ) {
-			if ( isset( $wp_query->query[ $tax_query_var ] ) ) {
-				return array(
-					'type' => 'tax_archive',
-					'tax'  => $tax_name,
-					'term' => $wp_query->query[ $tax_query_var ],
-				);
-			}
+	if ( isset( $wp_query->query['post_type'] ) && 'feature_proxy' === $wp_query->query['post_type'] ) {
+		if ( isset( $wp_query->query['feature-category'] ) ) {
+			return array(
+				'type' => 'tax_archive',
+				'tax'  => 'feature_category',
+				'term' => $wp_query->query['feature-category'],
+			);
+		} else {
+			return array(
+				'type' => 'post_type_archive',
+				'name' => 'feature_proxy',
+			);
+		}
+	}
+
+	if ( isset( $wp_query->query['post_type'] ) && 'tool' === $wp_query->query['post_type'] ) {
+		if ( isset( $wp_query->query['tool-type'] ) ) {
+			return array(
+				'type' => 'tax_archive',
+				'tax'  => 'tool_type',
+				'term' => $wp_query->query['tool-type'],
+			);
+		} else {
+			return array(
+				'type' => 'post_type_archive',
+				'name' => 'tool',
+			);
 		}
 	}
 
@@ -95,8 +130,8 @@ function get_current_query_type() {
 /**
  * Return the current post's primary label.
  *
- * For tools, that's its tool type.
- * For features, that's its target name.
+ * For tools, its tool type.
+ * For features, its target name.
  */
 function get_post_type_primary_label() {
 	$label = '';
