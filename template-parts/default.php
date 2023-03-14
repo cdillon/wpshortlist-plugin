@@ -39,12 +39,18 @@ HTML Structure:
 		</div>
 	</div>
 
-
 	<div class="wpshortlist-search-wrap">
-		<input type="search" id="wpshortlist-search" class="" name="fs" value="<?php echo esc_attr( get_query_var( 'fs' ) ); ?>" placeholder="">
-		<button type="submit" class="">Search</button>
+		<div class="wpshortlist-filter" data-filter_name="tool-type" data-filter_type="radio">
+			<fieldset>
+				<legend>
+					<h3 class="wpshortlist-filter-heading"><?php esc_html_e( 'Search this directory', 'wpshortlist' ); ?></h3>
+				</legend>
+				<input type="search" id="wpshortlist-search" class="" name="fs"
+					value="<?php echo esc_attr( get_query_var( 'fs' ) ); ?>" placeholder="">
+				<button type="submit" class="">Search</button>
+			</fieldset>
+		</div>
 	</div>
-
 
 	<?php foreach ( $this->current as $filter_set ) : ?>
 	<div class="wpshortlist-filterset">
