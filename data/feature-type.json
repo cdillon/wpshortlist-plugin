@@ -10,7 +10,7 @@
 	],
 	"filters": [
 		{
-			"name": "Type",
+			"name": "Tool Type",
 			"id": "tool-type",
 			"type": "tax_query_var",
 			"query_var": "tool-type",
